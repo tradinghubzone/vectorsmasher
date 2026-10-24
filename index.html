@@ -1,113 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta name="deriv-site-verification" content="4ce364617b68898181a35029fb4629065ecf4af876caf90e030c948ce24556cc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="deriv-site-verification" content="4ce364617b68898181a35029fb4629065ecf4af876caf90e030c948ce24556cc">
     <title>Vector_smasher Pro - Trading Workspace</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #030712; color: #f8fafc; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 4px; background-image: radial-gradient(circle at 50% 20%, #1a0505 0%, #030712 80%), radial-gradient(circle at 80% 80%, #1e1b4b 0%, #030712 70%); }
+        
+        /* Dynamic Theme Variables */
+        :root {
+            --bg-main: #030712;
+            --bg-card: #0b1120;
+            --border-color: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-red: #ef4444;
+        }
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-blue: #0284c7;
+            --accent-red: #dc2626;
+        }
 
-        /* Professional Boot Sequence Loader */
-        #bootLoader { position: fixed; inset: 0; background: radial-gradient(circle at 50% 30%, #450a0a 0%, #030712 90%); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; transition: opacity 0.5s ease; }
-        .boot-card { background: rgba(13, 19, 34, 0.92); backdrop-filter: blur(16px); border: 1px solid #ef4444; border-radius: 16px; padding: 24px; width: 100%; max-width: 360px; box-shadow: 0 25px 50px rgba(239,68,68,0.2); }
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            padding: 4px; 
+            background-image: radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.15) 0%, transparent 40%), 
+                              radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+                              linear-gradient(135deg, #030712 0%, #0b1120 100%);
+            transition: background 0.3s ease;
+        }
+
+        /* STEP 1 & 2: BOOT SEQUENCE LOADER */
+        #bootLoader { 
+            position: fixed; inset: 0; 
+            background: radial-gradient(circle at 50% 30%, rgba(239,68,68,0.2) 0%, #030712 90%), 
+                        url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop') no-repeat center center/cover;
+            background-blend-mode: overlay;
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; transition: opacity 0.5s ease; 
+        }
+        .boot-card { background: rgba(13, 19, 34, 0.92); backdrop-filter: blur(16px); border: 1px solid var(--accent-red); border-radius: 16px; padding: 24px; width: 100%; max-width: 380px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
         .boot-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 4px; }
-        .boot-subtitle { font-size: 11px; color: #f87171; margin-bottom: 20px; }
-        .boot-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; }
-        .boot-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulseDot 1.2s infinite ease-in-out; }
+        .boot-subtitle { font-size: 11px; color: var(--accent-red); margin-bottom: 15px; }
+        .boot-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; }
+        .boot-dot { width: 8px; height: 8px; background: var(--accent-red); border-radius: 50%; animation: pulseDot 1.2s infinite ease-in-out; }
         .boot-dot:nth-child(2) { animation-delay: 0.2s; }
         .boot-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes pulseDot { 0%, 100% { transform: scale(0.8); opacity: 0.4; } 50% { transform: scale(1.2); opacity: 1; } }
         .progress-bar-bg { width: 100%; height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
-        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ef4444, #8b5cf6); transition: width 0.2s linear; }
-        .boot-status { font-size: 11px; color: #f87171; font-weight: 500; }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-red), var(--accent-blue)); transition: width 0.1s linear; }
+        .boot-status { font-size: 11px; color: var(--accent-blue); font-weight: 500; }
 
-        /* Main Workspace Container */
-        .app-container { width: 100%; max-width: 480px; background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(12px); border: 1px solid #1e293b; border-radius: 16px; min-height: 98vh; display: none; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        /* MAIN APP CONTAINERS */
+        .app-container { width: 100%; max-width: 480px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; min-height: 98vh; display: none; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); transition: all 0.3s ease; }
         
+        /* STEP 4: WELCOME SCREEN */
+        #welcomeScreen { display: block; padding: 10px; }
+        .welcome-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .brand-box { font-size: 13px; font-weight: bold; color: var(--text-main); }
+        .brand-sub { font-size: 9px; color: var(--text-muted); display: block; }
+        .welcome-auth-btns { display: flex; gap: 6px; }
+        
+        .hero-welcome-title { font-size: 22px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; text-align: center; }
+        .hero-welcome-desc { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.4; margin-bottom: 20px; }
+        
+        .auth-box-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center; }
+        .auth-input-btn { display: block; width: 100%; background: var(--accent-blue); color: #030712; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-bottom: 10px; text-align: center; border: none; cursor: pointer; }
+        .auth-input-btn.dark { background: #1e293b; color: #fff; border: 1px solid var(--border-color); }
+
+        .feature-box-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .boxed-feature { background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-main); letter-spacing: 0.5px; }
+
+        /* DASHBOARD WORKSPACE SCREEN */
+        #dashboardWorkspace { display: none; }
+
         /* Top Utility Bar */
-        .top-utility-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; border-bottom: 1px solid #1e293b; margin-bottom: 8px; }
-        .menu-btn { background: #111827; border: 1px solid #1f2937; color: #fff; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .user-avatar { background: #ef4444; color: #fff; font-weight: bold; font-size: 11px; padding: 6px 10px; border-radius: 50%; }
-        .sync-btn { background: none; border: none; color: #22c55e; cursor: pointer; font-size: 14px; }
-        .switch-btn { background: #111827; border: 1px solid #334155; color: #fff; font-size: 11px; font-weight: bold; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
-        .balance-chip { background: #111827; border: 1px solid #1f2937; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 6px; }
+        .top-utility-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
+        .menu-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .switch-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font-size: 11px; font-weight: bold; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+        .balance-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 4px; cursor: pointer; }
 
         /* Advanced Feature Navigation Bar */
         .feature-nav-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
         .feature-nav-bar::-webkit-scrollbar { display: none; }
-        .feature-tab { background: #111827; border: 1px solid #1f2937; color: #94a3b8; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; white-space: nowrap; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; gap: 4px; }
-        .feature-tab.active { background: #1e293b; border-color: #ef4444; color: #fff; }
+        .feature-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+        .feature-tab.active { background: #1e293b; border-color: var(--accent-blue); color: #fff; }
 
         /* Market Ticker Scroller Bar */
         .ticker-scroller { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
         .ticker-scroller::-webkit-scrollbar { display: none; }
-        .ticker-chip { background: #0f172a; border: 1px solid #1e293b; padding: 6px 10px; border-radius: 8px; font-size: 10px; color: #94a3b8; white-space: nowrap; flex-shrink: 0; cursor: pointer; }
-        .ticker-chip.active { border-color: #ef4444; background: #1e293b; color: #fff; }
+        .ticker-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 10px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; cursor: pointer; }
+        .ticker-chip.active { border-color: var(--accent-blue); background: #1e293b; color: #fff; }
         .ticker-chip span { color: #22c55e; font-weight: bold; margin-left: 4px; }
 
         /* Workspace Hero Banner */
-        .hero-banner { background: linear-gradient(135deg, #161a2c 0%, #0f172a 100%); border: 1px solid #1f2937; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-        .hero-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 4px; }
-        .hero-quote { font-size: 11px; color: #94a3b8; font-style: italic; margin-bottom: 10px; }
-        .hero-meta { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #64748b; }
+        .hero-banner { background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .hero-title { font-size: 16px; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
+        .hero-quote { font-size: 10px; color: var(--text-muted); font-style: italic; margin-bottom: 8px; }
+        .hero-meta { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-muted); }
         .live-dot { color: #22c55e; font-weight: bold; }
 
         /* Quick Action Cards */
-        .section-label { font-size: 10px; color: #ef4444; text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .action-card { background: linear-gradient(135deg, #111827 0%, #0f172a 100%); border: 1px solid #1f2937; border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; position: relative; }
-        .action-card:hover { border-color: #ef4444; }
-        .action-card.premium { border-color: rgba(234, 179, 8, 0.4); }
+        .section-label { font-size: 10px; color: var(--accent-blue); text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .action-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; }
+        .action-card:hover { border-color: var(--accent-blue); }
         .card-left { display: flex; align-items: center; gap: 10px; }
-        .card-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .card-title { font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 2px; }
-        .card-desc { font-size: 10px; color: #94a3b8; }
-        .card-number { font-size: 11px; font-weight: bold; color: #64748b; }
-        .card-arrow { width: 24px; height: 24px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #cbd5e1; }
-        .badge-tag { background: #ef4444; color: #fff; font-size: 8px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold; }
+        .card-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; font-size: 15px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .card-title { font-size: 11px; font-weight: bold; color: var(--text-main); margin-bottom: 2px; }
+        .card-desc { font-size: 9px; color: var(--text-muted); }
+        .card-number { font-size: 11px; font-weight: bold; color: var(--text-muted); }
+        .card-arrow { width: 22px; height: 22px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #cbd5e1; }
+        .badge-tag { background: var(--accent-blue); color: #030712; font-size: 8px; padding: 2px 5px; border-radius: 4px; margin-left: 6px; font-weight: bold; }
 
-        /* Trading Panes */
-        .workspace-pane { display: none; }
-        .workspace-pane.active { display: block; }
-        .panel-box { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-        
-        .login-btn { display: block; width: 100%; background: #ef4444; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-align: center; }
-        .trade-row { display: flex; gap: 8px; margin-top: 10px; }
-        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; }
-        .btn-rise { background: #22c55e; }
-        .btn-fall { background: #ef4444; }
-        .btn-bot { background: #8b5cf6; width: 100%; margin-top: 8px; }
-
-        /* Digit Grid Controls */
-        .digit-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
-        .digit-btn { background: #1e293b; border: 1px solid #334155; color: #fff; padding: 8px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; font-size: 12px; }
-        .digit-btn.selected { background: #ef4444; color: #fff; border-color: #fff; }
-
-        /* Floating AI Orb */
-        .ai-floating-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #ef4444); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 13px; box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); border: 2px solid rgba(255,255,255,0.2); cursor: pointer; z-index: 100; }
-        
-        .status-text { font-size: 10px; color: #f87171; margin-top: 6px; text-align: center; }
+        /* Floating Animated Blue AI Orb */
+        .ai-floating-btn { position: fixed; bottom: 20px; right: 20px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 0 25px rgba(56, 189, 248, 0.8); border: 2px solid rgba(255,255,255,0.4); cursor: pointer; z-index: 100; animation: bluePulse 2s infinite ease-in-out; }
+        @keyframes bluePulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8); } 70% { transform: scale(1.08); box-shadow: 0 0 0 14px rgba(56, 189, 248, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
 
         /* Side Menu Drawer */
         #sideMenu { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 999; display: none; }
-        .menu-content { width: 260px; background: #0d1322; height: 100%; padding: 20px; border-right: 1px solid #1e293b; }
-        .menu-item { padding: 12px 0; border-bottom: 1px solid #1e293b; font-size: 13px; color: #cbd5e1; cursor: pointer; }
+        .menu-content { width: 260px; background: var(--bg-card); height: 100%; padding: 20px; border-right: 1px solid var(--border-color); }
+        .menu-item { padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 12px; color: var(--text-main); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
-    <!-- BOOT SEQUENCE LOADER -->
+    <!-- STEP 1 & 2: BOOT SEQUENCE LOADER -->
     <div id="bootLoader">
         <div class="boot-card">
-            <div class="boot-title">Vector_smasher Pro</div>
-            <div class="boot-subtitle">Initializing Secure Workspace...</div>
+            <div class="boot-title">Vector_smasher</div>
+            <div class="boot-subtitle">Loading Trading Workspace...</div>
             <div class="boot-dots">
                 <div class="boot-dot"></div>
                 <div class="boot-dot"></div>
                 <div class="boot-dot"></div>
             </div>
             <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar"></div>
+                <div class="progress-bar-fill" id="progressBar1"></div>
             </div>
-            <div class="boot-status" id="bootStatusText">Connecting live server feeds...</div>
+            <div class="boot-status" id="bootStatusText1">Please wait while we connect to server... (0%)</div>
+        </div>
+    </div>
+
+    <!-- STEP 3: D-BOT SEQUENCE LOADER -->
+    <div id="dbotLoader" style="display: none; position: fixed; inset: 0; background: #030712; z-index: 9998; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+        <div class="boot-card">
+            <div class="boot-title">Vector_smasher Bot Engine</div>
+            <div class="boot-subtitle">Initializing D-Bot Sequence</div>
+            <div class="boot-dots">
+                <div class="boot-dot"></div>
+                <div class="boot-dot"></div>
+                <div class="boot-dot"></div>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar2"></div>
+            </div>
+            <div class="boot-status" id="bootStatusText2">Initializing D-Bot 0%...</div>
         </div>
     </div>
 
@@ -115,55 +173,110 @@
     <div id="sideMenu" onclick="toggleMenu()">
         <div class="menu-content" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <span style="font-weight:bold; color:#ef4444;">Menu</span>
+                <span style="font-weight:bold; color:var(--accent-blue);">Menu Options</span>
                 <span onclick="toggleMenu()" style="cursor:pointer; font-size:16px;">✕</span>
             </div>
-            <div class="menu-item" onclick="switchFeature('dashboard')">🏠 Dashboard Workspace</div>
-            <div class="menu-item" onclick="switchFeature('manual')">⚡ Manual & Digit Trading</div>
-            <div class="menu-item" onclick="switchFeature('bots')">🤖 Free & Premium Bots</div>
-            <div class="menu-item" onclick="switchFeature('ai')">🤖 Vector AI Robot</div>
-            <div class="menu-item" onclick="logoutSession()">🔒 Logout Session</div>
+            <div class="menu-item">
+                <span>Theme Mode</span>
+                <button onclick="toggleTheme()" id="themeToggleBtn" style="background:none; border:none; cursor:pointer; font-size:16px;">🌙</button>
+            </div>
+            <div class="menu-item" onclick="switchTab('dashboard')">🏠 Dashboard</div>
+            <div class="menu-item" onclick="switchTab('botbuilder')">⚙️ Bot Builder</div>
+            <div class="menu-item" onclick="switchTab('freebots')">📂 Free Bots</div>
+            <div class="menu-item" onclick="switchTab('premium')">👑 Premium AI Bots</div>
+            <div class="menu-item" onclick="switchTab('signal')">📡 Signal AI</div>
+            <div class="menu-item" onclick="switchTab('manual')">👆 Manual Trader</div>
+            <div class="menu-item" onclick="switchTab('bulk')">📦 Bulk Trader</div>
+            <div class="menu-item" onclick="switchTab('copy')">👥 Copy Trader</div>
+            <div class="menu-item" onclick="switchTab('automated')">🤖 Automated</div>
+            <div class="menu-item" onclick="switchTab('speedbot')">🚀 Speedbot</div>
+            <div class="menu-item" onclick="switchTab('chat')">💬 Chat & Analysis</div>
         </div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
     <div class="app-container" id="mainApp">
-        <!-- Top Utility Bar -->
-        <div class="top-utility-bar">
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
-            <div class="user-avatar" id="userAvatar">VS</div>
-            <button class="sync-btn" onclick="window.location.reload()" title="Refresh connection">🔄</button>
-            <button class="switch-btn" onclick="toggleAccountType()">
-                <span id="accountTypeTxt">D ⇄ R</span>
-            </button>
-            <div class="balance-chip" id="topBalance">-- USD</div>
+
+        <!-- STEP 4: WELCOME SCREEN -->
+        <div id="welcomeScreen">
+            <div class="welcome-header">
+                <div class="brand-box">
+                    vectorsmasher
+                    <span class="brand-sub">powered by deriv</span>
+                </div>
+                <div class="welcome-auth-btns">
+                    <button onclick="enterDashboard()" class="auth-input-btn dark" style="padding: 6px 12px; margin:0;">Log In</button>
+                    <button onclick="enterDashboard()" class="auth-input-btn" style="padding: 6px 12px; margin:0;">Get Started</button>
+                </div>
+            </div>
+
+            <div class="hero-welcome-title">Welcome to vectorsmasher</div>
+            <div class="hero-welcome-desc">
+                Deriv market guidance, bots, and trading tools. Build, load, and run Deriv bot strategies from a focused workspace made for everyday traders.
+            </div>
+
+            <div class="auth-box-card">
+                <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv&redirect_uri=https://tradinghubzone.github.io/vectorsmasher/" class="auth-input-btn">
+                    Log In and Trade
+                </a>
+                <a href="https://track.deriv.com/_b2wW7x3q2b3w8r1v2v2v2v2v2v2v2v2v/1/" target="_blank" class="auth-input-btn dark">
+                    Create Free Account
+                </a>
+            </div>
+
+            <!-- EVERYTHING IN ONE WORKSPACE - FREE TO USE (Boxed & Uppercase) -->
+            <div style="margin-top: 15px;">
+                <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); text-align: center; margin-bottom: 8px; letter-spacing: 0.5px;">WORKSPACE HIGHLIGHTS</div>
+                <div class="boxed-feature">EVERYTHING IN ONE WORKSPACE — FREE TO USE</div>
+                
+                <div class="feature-box-grid">
+                    <div class="boxed-feature">📂 FREE BOT LIBRARY</div>
+                    <div class="boxed-feature">🧠 SMART AI RECOVERY</div>
+                    <div class="boxed-feature">📈 MARKET ANALYSIS</div>
+                    <div class="boxed-feature">⚡ SPEEDBOT EXECUTION</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Advanced Feature Navigation Bar -->
-        <div class="feature-nav-bar">
-            <div class="feature-tab active" id="ftab_dashboard" onclick="switchFeature('dashboard')">🏠 Dashboard</div>
-            <div class="feature-tab" id="ftab_automated" onclick="switchFeature('bots')">🤖 Automated</div>
-            <div class="feature-tab" id="ftab_chart" onclick="switchFeature('manual')">📈 Chart</div>
-            <div class="feature-tab" id="ftab_speedbot" onclick="switchFeature('bots')">🚀 Speedbot</div>
-            <div class="feature-tab" id="ftab_signal" onclick="switchFeature('ai')">📡 Signal AI</div>
-            <div class="feature-tab" id="ftab_manual" onclick="switchFeature('manual')">👆 Manual Trader</div>
-            <div class="feature-tab" id="ftab_ai" onclick="switchFeature('ai')">🤖 AI Robot</div>
-        </div>
+        <!-- DASHBOARD WORKSPACE SCREEN (Unlocks after welcome or login) -->
+        <div id="dashboardWorkspace">
+            <!-- Top Utility Bar -->
+            <div class="top-utility-bar">
+                <button class="menu-btn" onclick="toggleMenu()">☰</button>
+                <button class="switch-btn" onclick="toggleAccountType()">
+                    <span id="accountTypeTxt">D ⇄ R</span>
+                </button>
+                <div class="balance-chip" id="topBalance" onclick="toggleCurrencyUnit()">3,020.41 USD</div>
+            </div>
 
-        <!-- Market Ticker Scroller Bar -->
-        <div class="ticker-scroller">
-            <div class="ticker-chip active" id="tc_R_75" onclick="selectMarket('R_75', 'Volatility 75 Index')">VOL 75 <span id="p_75">---</span></div>
-            <div class="ticker-chip" id="tc_R_10" onclick="selectMarket('R_10', 'Volatility 10 Index')">VOL 10 <span id="p_10">---</span></div>
-            <div class="ticker-chip" id="tc_R_25" onclick="selectMarket('R_25', 'Volatility 25 Index')">VOL 25 <span id="p_25">---</span></div>
-            <div class="ticker-chip" id="tc_R_50" onclick="selectMarket('R_50', 'Volatility 50 Index')">VOL 50 <span id="p_50">---</span></div>
-            <div class="ticker-chip" id="tc_R_100" onclick="selectMarket('R_100', 'Volatility 100 Index')">VOL 100 <span id="p_100">---</span></div>
-        </div>
+            <!-- Advanced Feature Navigation Bar -->
+            <div class="feature-nav-bar">
+                <div class="feature-tab active" id="ftab_dashboard" onclick="switchTab('dashboard')">Dashboard</div>
+                <div class="feature-tab" id="ftab_botbuilder" onclick="switchTab('botbuilder')">Bot Builder</div>
+                <div class="feature-tab" id="ftab_freebots" onclick="switchTab('freebots')">Free Bots</div>
+                <div class="feature-tab" id="ftab_premium" onclick="switchTab('premium')">Premium AI</div>
+                <div class="feature-tab" id="ftab_signal" onclick="switchTab('signal')">Signal AI</div>
+                <div class="feature-tab" id="ftab_manual" onclick="switchTab('manual')">Manual Trader</div>
+                <div class="feature-tab" id="ftab_bulk" onclick="switchTab('bulk')">Bulk Trader</div>
+                <div class="feature-tab" id="ftab_copy" onclick="switchTab('copy')">Copy Trade</div>
+                <div class="feature-tab" id="ftab_automated" onclick="switchTab('automated')">Automated</div>
+                <div class="feature-tab" id="ftab_speedbot" onclick="switchTab('speedbot')">Speed Bot</div>
+                <div class="feature-tab" id="ftab_chat" onclick="switchTab('chat')">Chat</div>
+            </div>
 
-        <!-- FEATURE 1: DASHBOARD WORKSPACE -->
-        <div id="pane_dashboard" class="workspace-pane active">
+            <!-- Market Ticker Scroller Bar (Vol 10, Vol 25, Vol 50, Vol 100) -->
+            <div class="ticker-scroller">
+                <div class="ticker-chip" onclick="alert('Viewing Vol 10 Index')">VOL 10 <span id="p_10">4889.57</span></div>
+                <div class="ticker-chip" onclick="alert('Viewing Vol 25 Index')">VOL 25 <span id="p_25">2821.10</span></div>
+                <div class="ticker-chip" onclick="alert('Viewing Vol 50 Index')">VOL 50 <span id="p_50">85.14</span></div>
+                <div class="ticker-chip active" onclick="alert('Viewing Vol 75 Index')">VOL 75 <span id="p_75">4889.61</span></div>
+                <div class="ticker-chip" onclick="alert('Viewing Vol 100 Index')">VOL 100 <span id="p_100">1267.70</span></div>
+            </div>
+
+            <!-- Workspace Hero Banner (Time-Aware Greeting: Morning/Afternoon/Evening) -->
             <div class="hero-banner">
-                <div class="section-label" style="margin-bottom: 2px;">Your Trading Workspace</div>
-                <div class="hero-title">Good afternoon, trader.</div>
+                <div class="section-label" style="margin-bottom: 2px;">YOUR TRADING WORKSPACE</div>
+                <div class="hero-title" id="greetingTitle">Good afternoon, trader.</div>
                 <div class="hero-quote">"Plan your trade, then trade your plan."</div>
                 <div class="hero-meta">
                     <div><span class="live-dot">●</span> Markets Live</div>
@@ -171,9 +284,10 @@
                 </div>
             </div>
 
-            <div class="section-label">Quick Actions</div>
+            <div class="section-label">QUICK ACTIONS</div>
 
-            <div class="action-card" onclick="switchFeature('bots')">
+            <!-- Quick Action 01: Load Bot -->
+            <div class="action-card" onclick="switchTab('botbuilder')">
                 <div class="card-left">
                     <div class="card-icon">📁</div>
                     <div>
@@ -187,7 +301,8 @@
                 </div>
             </div>
 
-            <div class="action-card premium" onclick="switchFeature('ai')">
+            <!-- Quick Action 02: Premium Bots -->
+            <div class="action-card" onclick="switchTab('premium')">
                 <div class="card-left">
                     <div class="card-icon" style="background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.3); color: #eab308;">👑</div>
                     <div>
@@ -201,9 +316,10 @@
                 </div>
             </div>
 
-            <div class="action-card" onclick="switchFeature('bots')">
+            <!-- Quick Action 03: Speed Bot -->
+            <div class="action-card" onclick="switchTab('speedbot')">
                 <div class="card-left">
-                    <div class="card-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">🚀</div>
+                    <div class="card-icon" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue);">🚀</div>
                     <div>
                         <div class="card-title">Speed Bot</div>
                         <div class="card-desc">One-click automated trading</div>
@@ -215,11 +331,12 @@
                 </div>
             </div>
 
-            <div class="action-card" onclick="switchFeature('manual')">
+            <!-- Quick Action 04: Manual Trading (Popular) -->
+            <div class="action-card" onclick="switchTab('manual')">
                 <div class="card-left">
                     <div class="card-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;">👆</div>
                     <div>
-                        <div class="card-title">Manual Trading <span class="badge-tag">Popular</span></div>
+                        <div class="card-title">Manual Trading <span class="badge-tag">Popular ★</span></div>
                         <div class="card-desc">Full control, trade your way</div>
                     </div>
                 </div>
@@ -230,125 +347,70 @@
             </div>
         </div>
 
-        <!-- FEATURE 2: MANUAL & DIGIT TRADING -->
-        <div id="pane_manual" class="workspace-pane">
-            <div class="section-label">Manual & Digit Over/Under Terminal</div>
-            <div class="panel-box">
-                <div id="authRequiredArea">
-                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">Log in with Deriv to authorize your live demo/real balance and execute trades.</p>
-                    <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv&redirect_uri=https://tradinghubzone.github.io/vectorsmasher/" class="login-btn">
-                        Log In with Deriv 🔐
-                    </a>
-                </div>
-
-                <div id="activeManualTrading" style="display: none;">
-                    <div style="font-size: 11px; color: #ef4444; margin-bottom: 4px;" id="selectedAssetTitle">Volatility 75 Index</div>
-                    <div style="font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 10px;" id="mainAssetPrice">---.--</div>
-                    
-                    <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">Select Digit Prediction Barrier (0-9):</div>
-                    <div class="digit-grid">
-                        <div class="digit-btn" onclick="selectDigit(0)">0</div>
-                        <div class="digit-btn" onclick="selectDigit(1)">1</div>
-                        <div class="digit-btn" onclick="selectDigit(2)">2</div>
-                        <div class="digit-btn" onclick="selectDigit(3)">3</div>
-                        <div class="digit-btn" onclick="selectDigit(4)">4</div>
-                        <div class="digit-btn selected" onclick="selectDigit(5)" id="defaultDigit">5</div>
-                        <div class="digit-btn" onclick="selectDigit(6)">6</div>
-                        <div class="digit-btn" onclick="selectDigit(7)">7</div>
-                        <div class="digit-btn" onclick="selectDigit(8)">8</div>
-                        <div class="digit-btn" onclick="selectDigit(9)">9</div>
-                    </div>
-                    <div style="font-size: 11px; color: #fff; margin: 8px 0; text-align: center;">
-                        Barrier: <span id="chosenDigitLbl" style="color: #ef4444; font-weight: bold;">5</span> ($10 USD Stake)
-                    </div>
-
-                    <div class="trade-row">
-                        <button class="action-btn btn-rise" onclick="executeOrder('DIGITOVER')">DIGIT OVER 🟢</button>
-                        <button class="action-btn btn-fall" onclick="executeOrder('DIGITUNDER')">DIGITUNDER 🔴</button>
-                    </div>
-
-                    <div class="trade-row" style="margin-top: 8px;">
-                        <button class="action-btn btn-rise" onclick="executeOrder('CALL')">BUY RISE 📈</button>
-                        <button class="action-btn btn-fall" onclick="executeOrder('PUT')">BUY FALL 📉</button>
-                    </div>
-                    <div id="manualMsg" class="status-text"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FEATURE 3: BOTS -->
-        <div id="pane_bots" class="workspace-pane">
-            <div class="section-label">Vector Automated Bot Library</div>
-            <div class="panel-box">
-                <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 4px;">Speedbot Strategy V1</div>
-                <p style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Autonomous 1-tick momentum scanner with built-in risk management.</p>
-                <button class="action-btn btn-bot" onclick="alert('Speedbot strategy loaded successfully!')">LAUNCH SPEEDBOT 🚀</button>
-            </div>
-        </div>
-
-        <!-- FEATURE 4: AI ROBOT -->
-        <div id="pane_ai" class="workspace-pane">
-            <div class="section-label">Vector AI Autonomous Robot Engine</div>
-            <div class="panel-box">
-                <div style="font-size: 12px; font-weight: bold; color: #8b5cf6; margin-bottom: 4px;">🤖 Vector AI Neural Scanner</div>
-                <p style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Evaluating live momentum triggers across multi-tick intervals automatically.</p>
-                
-                <div style="background: #030712; padding: 10px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; border: 1px solid #1f2937;">
-                    <div>Status: <span id="aiState" style="color: #ef4444; font-weight: bold;">IDLE</span></div>
-                </div>
-
-                <button class="action-btn btn-bot" onclick="toggleAIBotEngine()" id="aiEngineBtn">START VECTOR AI ROBOT 🤖</button>
-                <div id="aiEngineLog" class="status-text" style="margin-top: 8px;">Awaiting active session...</div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Floating AI Quick Orb -->
-    <div class="ai-floating-btn" onclick="switchFeature('ai')" title="Vector AI Robot">AI</div>
+    <!-- Animated Blue AI Floating Button -->
+    <div class="ai-floating-btn" onclick="switchTab('signal')" title="Vector AI Robot">AI</div>
 
     <script>
-        let ws;
-        let userToken = "";
-        let activeSymbol = "R_75";
-        let activeSymbolName = "Volatility 75 Index";
-        let selectedPredictionDigit = 5;
-        let aiRunning = false;
-        let aiLoop;
-
-        // Balanced Boot Sequence Loader
+        // STEP 1, 2 & 3: BOOT SEQUENCE CONTROLLER
         window.onload = function() {
-            let progress = 0;
-            const bar = document.getElementById('progressBar');
-            const status = document.getElementById('bootStatusText');
+            let p1 = 0;
+            const bar1 = document.getElementById('progressBar1');
+            const status1 = document.getElementById('bootStatusText1');
 
-            const bootInterval = setInterval(() => {
-                progress += Math.floor(Math.random() * 20) + 10;
-                if(progress > 100) progress = 100;
-                bar.style.width = progress + '%';
+            const timer1 = setInterval(() => {
+                p1 += 10;
+                if(p1 > 100) p1 = 100;
+                bar1.style.width = p1 + '%';
+                status1.innerText = `Please wait while we connect to server... (${p1}%)`;
 
-                if(progress < 40) {
-                    status.innerText = "Initializing secure workspace...";
-                } else if(progress < 80) {
-                    status.innerText = "Connecting to Deriv WebSockets...";
-                } else {
-                    clearInterval(bootInterval);
+                if(p1 === 100) {
+                    clearInterval(timer1);
                     setTimeout(() => {
-                        document.getElementById('bootLoader').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('bootLoader').style.display = 'none';
-                            document.getElementById('mainApp').style.display = 'block';
-                            checkOAuthTokens();
-                            connectWebSocket();
-                            updateLiveClock();
-                        }, 400);
-                    }, 300);
+                        document.getElementById('bootLoader').style.display = 'none';
+                        startDbotLoader();
+                    }, 400);
                 }
             }, 120);
         };
 
+        function startDbotLoader() {
+            const dbotDiv = document.getElementById('dbotLoader');
+            dbotDiv.style.display = 'flex';
+            let p2 = 0;
+            const bar2 = document.getElementById('progressBar2');
+            const status2 = document.getElementById('bootStatusText2');
+
+            const timer2 = setInterval(() => {
+                p2 += 15;
+                if(p2 > 100) p2 = 100;
+                bar2.style.width = p2 + '%';
+                status2.innerText = `Initializing D-Bot ${p2}%...`;
+
+                if(p2 === 100) {
+                    clearInterval(timer2);
+                    setTimeout(() => {
+                        dbotDiv.style.display = 'none';
+                        document.getElementById('mainApp').style.display = 'block';
+                        setDynamicGreeting();
+                        updateLiveClock();
+                    }, 400);
+                }
+            }, 100);
+        }
+
+        // Time-aware greeting (Morning, Afternoon, Evening)
+        function setDynamicGreeting() {
+            const hour = new Date().getHours();
+            let greet = "Good afternoon, trader.";
+            if (hour < 12) greet = "Good morning, trader.";
+            else if (hour >= 18) greet = "Good evening, trader.";
+            document.getElementById('greetingTitle').innerText = greet;
+        }
+
         function updateLiveClock() {
-            const updateTime = () => {
+            setInterval(() => {
                 const now = new Date();
                 let hours = now.getHours();
                 let minutes = now.getMinutes();
@@ -356,200 +418,66 @@
                 hours = hours % 12;
                 hours = hours ? hours : 12;
                 minutes = minutes < 10 ? '0' + minutes : minutes;
-                let clockEl = document.getElementById('liveClock');
-                if(clockEl) clockEl.innerText = `${hours}:${minutes} ${ampm}`;
-            };
-            updateTime();
-            setInterval(updateTime, 1000);
+                document.getElementById('liveClock').innerText = `${hours}:${minutes} ${ampm}`;
+            }, 1000);
         }
 
-        function checkOAuthTokens() {
-            const hash = window.location.hash.substring(1);
-            const hashParams = new URLSearchParams(hash);
-            const queryParams = new URLSearchParams(window.location.search);
-
-            for (let [key, value] of hashParams.entries()) {
-                if (key.startsWith('token')) {
-                    userToken = value;
-                    localStorage.setItem('deriv_token', userToken);
-                }
-            }
-            for (let [key, value] of queryParams.entries()) {
-                if (key.startsWith('token')) {
-                    userToken = value;
-                    localStorage.setItem('deriv_token', userToken);
-                }
-            }
-            if (!userToken) {
-                userToken = localStorage.getItem('deriv_token');
-            }
-            if (userToken) {
-                document.getElementById('authRequiredArea').style.display = 'none';
-                document.getElementById('activeManualTrading').style.display = 'block';
-            }
-        }
-
+        // Navigation & Menu Controls
         function toggleMenu() {
             let menu = document.getElementById('sideMenu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        function switchFeature(paneId) {
-            document.querySelectorAll('.workspace-pane').forEach(el => el.classList.remove('active'));
+        function enterDashboard() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('dashboardWorkspace').style.display = 'block';
+        }
+
+        function switchTab(tabId) {
             document.querySelectorAll('.feature-tab').forEach(el => el.classList.remove('active'));
-
-            if(document.getElementById('pane_' + paneId)) {
-                document.getElementById('pane_' + paneId).classList.add('active');
+            if(document.getElementById('ftab_' + tabId)) {
+                document.getElementById('ftab_' + tabId).classList.add('active');
             }
-            if(document.getElementById('ftab_' + paneId)) {
-                document.getElementById('ftab_' + paneId).classList.add('active');
-            }
-            let menu = document.getElementById('sideMenu');
-            if(menu) menu.style.display = 'none';
+            toggleMenu();
+            enterDashboard();
         }
 
-        function selectMarket(symbol, name) {
-            activeSymbol = symbol;
-            activeSymbolName = name;
-            document.querySelectorAll('.ticker-chip').forEach(el => el.classList.remove('active'));
-            document.getElementById('tc_' + symbol).classList.add('active');
-            document.getElementById('selectedAssetTitle').innerText = name;
-
-            if(ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ ticks: symbol }));
-            }
-        }
-
-        function selectDigit(digit) {
-            selectedPredictionDigit = digit;
-            document.querySelectorAll('.digit-btn').forEach(el => el.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            document.getElementById('chosenDigitLbl').innerText = digit;
-        }
-
-        function toggleAccountType() {
-            if(!userToken) {
-                alert("Please log in with Deriv first to switch accounts.");
-                return;
-            }
-            alert("Account type managed via Deriv session authorization.");
-        }
-
-        function connectWebSocket() {
-            ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=34LmtjEQdOd9cQs0Zh1uc');
-
-            ws.onopen = function() {
-                ws.send(JSON.stringify({ ticks: "R_75" }));
-                ws.send(JSON.stringify({ ticks: "R_10" }));
-                ws.send(JSON.stringify({ ticks: "R_25" }));
-                ws.send(JSON.stringify({ ticks: "R_50" }));
-                ws.send(JSON.stringify({ ticks: "R_100" }));
-
-                if(userToken) {
-                    ws.send(JSON.stringify({ authorize: userToken }));
-                }
-            };
-
-            ws.onmessage = function(event) {
-                let data = JSON.parse(event.data);
-
-                if(data.msg_type === 'authorize' && data.authorize) {
-                    document.getElementById('authRequiredArea').style.display = 'none';
-                    document.getElementById('activeManualTrading').style.display = 'block';
-                    let balFormatted = `${data.authorize.balance} ${data.authorize.currency}`;
-                    document.getElementById('topBalance').innerText = balFormatted;
-                    document.getElementById('userAvatar').innerText = data.authorize.loginid.substring(0, 2).toUpperCase();
-                }
-
-                if(data.tick) {
-                    let sym = data.tick.symbol;
-                    let val = data.tick.quote.toFixed(3);
-                    let targetEl = document.getElementById('p_' + sym.replace('R_', ''));
-                    if(targetEl) {
-                        targetEl.innerText = val;
-                    }
-                    if(sym === activeSymbol) {
-                        let mainPriceEl = document.getElementById('mainAssetPrice');
-                        if(mainPriceEl) mainPriceEl.innerText = val;
-                    }
-                }
-
-                if(data.msg_type === 'buy' && data.buy) {
-                    let msgEl = document.getElementById('manualMsg');
-                    if(msgEl) msgEl.innerText = `Order Executed! Contract ID: ${data.buy.contract_id}`;
-                }
-            };
-
-            ws.onclose = function() {
-                setTimeout(connectWebSocket, 3000);
-            };
-        }
-
-        function executeOrder(contractType) {
-            if(!userToken) {
-                alert("Please log in with Deriv first to execute trades.");
-                return;
-            }
-            let msgEl = document.getElementById('manualMsg');
-            if(msgEl) msgEl.innerText = "Transmitting order to Deriv...";
-            
-            let payload = {
-                buy: 1,
-                price: 10,
-                parameters: {
-                    amount: 10,
-                    basis: "stake",
-                    currency: "USD",
-                    duration: 1,
-                    duration_unit: "t",
-                    symbol: activeSymbol,
-                    contract_type: contractType
-                }
-            };
-
-            if(contractType === 'DIGITOVER' || contractType === 'DIGITUNDER') {
-                payload.parameters.barrier = selectedPredictionDigit.toString();
-            }
-
-            ws.send(JSON.stringify(payload));
-        }
-
-        function toggleAIBotEngine() {
-            if(!userToken) {
-                alert("Please authorize your account first to run the AI Robot!");
-                return;
-            }
-            aiRunning = !aiRunning;
-            let btn = document.getElementById('aiEngineBtn');
-            let stateLbl = document.getElementById('aiState');
-            let log = document.getElementById('aiEngineLog');
-
-            if(aiRunning) {
-                btn.innerText = "STOP VECTOR AI ROBOT";
-                btn.style.background = "#ef4444";
-                stateLbl.innerText = "SCANNING & TRADING ACTIVE";
-                stateLbl.style.color = "#22c55e";
-                log.innerText = "Vector AI: Analyzing volatility momentum...";
-
-                aiLoop = setInterval(() => {
-                    if(!aiRunning) return;
-                    log.innerText = "Vector AI: Executing automated contract...";
-                    executeOrder('CALL');
-                }, 8000);
+        // Theme Toggle (Dark with Moon 🌙 / Day with Sun 🌞)
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            let btn = document.getElementById('themeToggleBtn');
+            if(document.body.classList.contains('light-theme')) {
+                btn.innerText = "🌞";
             } else {
-                clearInterval(aiLoop);
-                btn.innerText = "START VECTOR AI ROBOT 🤖";
-                btn.style.background = "#8b5cf6";
-                stateLbl.innerText = "IDLE";
-                stateLbl.style.color = "#ef4444";
-                log.innerText = "Vector AI paused.";
+                btn.innerText = "🌙";
             }
         }
 
-        function logoutSession() {
-            localStorage.removeItem('deriv_token');
-            userToken = "";
-            window.location.reload();
+        // Demo / Real Account Shift Button (D ⇄ R)
+        let isReal = false;
+        function toggleAccountType() {
+            isReal = !isReal;
+            let txt = document.getElementById('accountTypeTxt');
+            let bal = document.getElementById('topBalance');
+            if(isReal) {
+                txt.innerText = "REAL (R)";
+                bal.innerText = "1,250.00 USD";
+            } else {
+                txt.innerText = "DEMO (D)";
+                bal.innerText = "3,020.41 USD";
+            }
+        }
+
+        // Currency Toggle (USD ⇄ KES)
+        let isKes = false;
+        function toggleCurrencyUnit() {
+            isKes = !isKes;
+            let bal = document.getElementById('topBalance');
+            if(isKes) {
+                bal.innerText = "392,653.30 KES";
+            } else {
+                bal.innerText = "3,020.41 USD";
+            }
         }
     </script>
 </body>
