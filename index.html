@@ -1,77 +1,316 @@
 <!DOCTYPE html>
-<html>
-<head><meta name="deriv-site-verification" content="4ce364617b68898181a35029fb4629065ecf4af876caf90e030c948ce24556cc">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TradingHubZone AI - AppID 34LmtjEQdOd9cQs0Zh1uc</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
-body{background:#0a0e1a;color:#fff}
-.top{background:#111827;padding:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid #00d26a}
-.btn{padding:12px;border:none;border-radius:10px;font-weight:800;cursor:pointer}
-.btn-g{background:#00d26a;color:#000}
-.btn-r{background:#ff4444;color:#fff}
-.btn-d{background:#1f2937;color:#fff;border:1px solid #333}
-.card{background:#151a2b;border:1px solid #1f2937;border-radius:14px;padding:14px;margin:10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.input{width:100%;padding:10px;background:#0f1424;border:1px solid #333;border-radius:8px;color:#fff;margin:6px 0}
-.tick{height:160px;background:#0a0e1a;border:1px solid #222;border-radius:10px;position:relative;overflow:hidden;display:flex;align-items:end;padding:5px}
-.bar{width:4px;margin:0 1px;background:#00d26a;display:inline-block}
-</style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="deriv-site-verification" content="4ce364617b68898181a35029fb4629065ecf4af876caf90e030c948ce24556cc">
+    <title>Vector_smasher Pro Terminal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: #040711; color: #f8fafc; padding: 8px; display: flex; justify-content: center; min-height: 100vh; }
+        .terminal { width: 100%; max-width: 480px; background: #0d1322; border: 1px solid #1e293b; border-radius: 16px; padding: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+        .logo { font-size: 14px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 6px; }
+        .connection-status { font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
+        .connection-status.connected { background: rgba(34, 197, 94, 0.15); color: #22c55e; border-color: #22c55e; }
+
+        /* Loader Screen */
+        #loaderScreen { background: #0d1322; padding: 30px; text-align: center; border-radius: 12px; margin-bottom: 10px; }
+        .spinner { width: 36px; height: 36px; border: 3px solid #1e293b; border-top: 3px solid #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; gap: 4px; margin-bottom: 12px; background: #161e31; padding: 4px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: #2563eb; color: #fff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .ticker-section { background: #161e31; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #283548; }
+        .price-display { font-size: 22px; font-weight: bold; color: #fff; margin-bottom: 2px; }
+        
+        .chart-box { width: 100%; height: 200px; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #283548; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .panel-box { background: #161e31; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #283548; }
+        .section-title { font-size: 11px; color: #94a3b8; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; }
+        
+        .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-align: center; }
+        
+        .trade-row { display: flex; gap: 8px; margin-top: 8px; }
+        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; color: white; }
+        .btn-rise { background: #22c55e; }
+        .btn-fall { background: #ef4444; }
+        .btn-bot { background: #8b5cf6; width: 100%; margin-top: 8px; }
+
+        .status-text { font-size: 10px; color: #38bdf8; margin-top: 6px; text-align: center; }
+    </style>
 </head>
 <body>
-<div class="top">
-<div>🤖 TradingHubZone | APP: 34LmtjEQdOd9cQs0Zh1uc | LIVE</div>
-<div id="bal">Balance: $0.00</div>
-</div>
 
-<div class="grid">
-<div>
-<div class="card">
-<h3>📈 Manual Trading</h3>
-<select id="market" class="input">
-<option value="R_100">Volatility 100 Index</option>
-<option value="R_50">Volatility 50</option>
-<option value="CRASH500">Crash 500</option>
-<option value="BOOM500">Boom 500</option>
-<option value="OTC_US500">US500</option>
-</select>
-<div class="tick" id="chart"></div>
-<div style="text-align:center;font-size:28px;font-weight:900;margin:8px 0" id="price">$0.00</div>
-<div class="grid">
-<input id="stake" class="input" type="number" value="1">
-<select id="duration" class="input"><option value="5">5 Ticks</option><option value="10">10 Ticks</option></select>
-</div>
-<div class="grid">
-<button class="btn btn-g" onclick="trade('CALL')">RISE 📈</button>
-<button class="btn btn-r" onclick="trade('PUT')">FALL 📉</button>
-</div>
-<button class="btn btn-d" style="width:100%;margin-top:8px" onclick="login()">🔑 LOGIN WITH DERIV</button>
-</div>
-</div>
+    <div class="terminal">
+        <div class="header">
+            <span class="logo">⚡ Vector_smasher Pro</span>
+            <div id="connStatus" class="connection-status">INITIALIZING</div>
+        </div>
 
-<div>
-<div class="card">
-<h3>🤖 FREE AI Robots (AppID 34LmtjEQdOd9cQs0Zh1uc)</h3>
-<div class="card">1. Martingale Even Bot <button class="btn btn-g" onclick="toggleBot(1)">START</button></div>
-<div class="card">2. RSI Rise/Fall AI <button class="btn btn-g" onclick="toggleBot(2)">START</button></div>
-<div class="card">3. Tick Pattern AI <button class="btn btn-g" onclick="toggleBot(3)">START</button></div>
-<div class="card">4. Crash/Boom Sniper <button class="btn btn-g" onclick="toggleBot(4)">START</button></div>
-<div class="card">5. Advanced Recovery Bot <button class="btn btn-g" onclick="toggleBot(5)">START</button></div>
-<button class="btn btn-r" style="width:100%" onclick="stopAll()">STOP ALL</button>
-</div>
-</div>
-</div>
+        <div id="loaderScreen">
+            <div class="spinner"></div>
+            <div style="font-size: 12px; font-weight: bold; color: #fff;">Loading Terminal Workspace...</div>
+        </div>
 
-<script>
-const APP_ID='34LmtjEQdOd9cQs0Zh1uc';
-let ws=new WebSocket('wss://ws.derivws.com/websockets/v3?app_id='+APP_ID);
-let ticks=[];
-ws.onmessage=e=>{let d=JSON.parse(e.data); if(d.tick){ticks.push(d.tick.quote); if(ticks.length>50)ticks.shift(); document.getElementById('price').innerText='$'+d.tick.quote.toFixed(2);}};
-function trade(dir){alert(dir+' $'+document.getElementById('stake').value+' AppID '+APP_ID+' - Login for real trading');}
-function toggleBot(n){alert('Bot '+n+' started with AppID '+APP_ID);}
-function stopAll(){alert('All stopped');}
-function login(){window.open('https://oauth.deriv.com/oauth2/authorize?app_id='+APP_ID,'_blank');}
-</script>
+        <div id="workspaceContainer" style="display: none;">
+            
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('manual', event)">Manual Terminal</button>
+                <button class="tab-btn" onclick="switchTab('bots', event)">AI Bot Engine</button>
+                <button class="tab-btn" onclick="switchTab('charts', event)">Live Charts</button>
+            </div>
+
+            <!-- TAB 1: MANUAL TRADING -->
+            <div id="tab-manual" class="tab-content active">
+                <div class="ticker-section">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px;">
+                        <span>Volatility 75 Index</span>
+                        <span style="color: #22c55e;">● LIVE FEED</span>
+                    </div>
+                    <div class="price-display" id="livePrice">---.--</div>
+                    <div class="price-change" id="priceDirection" style="font-size: 10px; color: #22c55e;">Syncing market ticks...</div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="section-title">Client Account Session</div>
+                    <div id="authArea">
+                        <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv&redirect_uri=https://tradinghubzone.github.io/vectorsmasher/" class="login-btn">
+                            Log in with Deriv 🔐
+                        </a>
+                    </div>
+                    <div id="tradingControls" style="display: none;">
+                        <div style="font-size: 12px; font-weight: bold; color: #38bdf8; margin-bottom: 6px;" id="accountInfo">Account Connected</div>
+                        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">Contract: 5 Ticks Rise/Fall ($10 Stake)</div>
+                        <div class="trade-row">
+                            <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
+                            <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
+                        </div>
+                        <button onclick="logoutSession()" style="margin-top:10px; background:none; border:none; color:#ef4444; font-size:10px; cursor:pointer; width:100%; text-align:center;">Disconnect Session</button>
+                    </div>
+                    <div id="tradeMessage" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: AI BOT ENGINE -->
+            <div id="tab-bots" class="tab-content">
+                <div class="panel-box">
+                    <div class="section-title">Autonomous AI Momentum Bot</div>
+                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">
+                        Smart algorithmic scanner evaluating live market direction for automated entries.
+                    </p>
+                    <div style="background: #090d16; padding: 10px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; border: 1px solid #1e293b;">
+                        <div>AI Status: <span id="botState" style="color: #ef4444;">IDLE / STOPPED</span></div>
+                    </div>
+                    <button class="action-btn btn-bot" onclick="toggleBot()" id="botToggleBtn">START AI BOT 🤖</button>
+                    <div id="botLog" class="status-text" style="margin-top: 8px;">Awaiting active session...</div>
+                </div>
+            </div>
+
+            <!-- TAB 3: CHARTS -->
+            <div id="tab-charts" class="tab-content">
+                <div class="chart-box">
+                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=DERIV:R_75&interval=1&theme=dark&style=1&timezone=Etc%2FUTC"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        let lastPrice = 0;
+        let userToken = "";
+        let botActive = false;
+        let botInterval;
+
+        function checkOAuthTokens() {
+            const hash = window.location.hash.substring(1);
+            const hashParams = new URLSearchParams(hash);
+            const queryParams = new URLSearchParams(window.location.search);
+
+            for (let [key, value] of hashParams.entries()) {
+                if (key.startsWith('token')) {
+                    userToken = value;
+                    localStorage.setItem('deriv_token', userToken);
+                }
+            }
+            for (let [key, value] of queryParams.entries()) {
+                if (key.startsWith('token')) {
+                    userToken = value;
+                    localStorage.setItem('deriv_token', userToken);
+                }
+            }
+
+            if (!userToken) {
+                userToken = localStorage.getItem('deriv_token');
+            }
+        }
+
+        checkOAuthTokens();
+
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loaderScreen').style.display = 'none';
+                document.getElementById('workspaceContainer').style.display = 'block';
+                
+                if (userToken) {
+                    document.getElementById('authArea').style.display = 'none';
+                    document.getElementById('tradingControls').style.display = 'block';
+                }
+                
+                connectWebSocket();
+            }, 800);
+        };
+
+        function switchTab(tabName, evt) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            if(tabName === 'manual') {
+                document.getElementById('tab-manual').classList.add('active');
+            } else if(tabName === 'bots') {
+                document.getElementById('tab-bots').classList.add('active');
+            } else if(tabName === 'charts') {
+                document.getElementById('tab-charts').classList.add('active');
+            }
+            if(evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            }
+        }
+
+        function connectWebSocket() {
+            ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=34LmtjEQdOd9cQs0Zh1uc');
+
+            ws.onopen = function() {
+                document.getElementById('connStatus').innerText = "CONNECTED";
+                document.getElementById('connStatus').classList.add('connected');
+                ws.send(JSON.stringify({ ticks: "R_75" }));
+
+                if (userToken) {
+                    ws.send(JSON.stringify({ authorize: userToken }));
+                }
+            };
+
+            ws.onmessage = function(event) {
+                let data = JSON.parse(event.data);
+
+                if (data.msg_type === 'authorize') {
+                    if (data.authorize) {
+                        document.getElementById('authArea').style.display = 'none';
+                        document.getElementById('tradingControls').style.display = 'block';
+                        document.getElementById('accountInfo').innerText = `Account: ${data.authorize.loginid} (${data.authorize.currency} ${data.authorize.balance})`;
+                    } else if (data.error) {
+                        logoutSession();
+                    }
+                }
+
+                if (data.tick) {
+                    let currentPrice = data.tick.quote;
+                    let formattedPrice = currentPrice.toFixed(2);
+                    document.getElementById('livePrice').innerText = formattedPrice;
+
+                    let dirElement = document.getElementById('priceDirection');
+                    if (currentPrice > lastPrice) {
+                        dirElement.style.color = "#22c55e";
+                        dirElement.innerText = "▲ Bullish Pressure Active";
+                    } else if (currentPrice < lastPrice) {
+                        dirElement.style.color = "#ef4444";
+                        dirElement.innerText = "▼ Bearish Momentum Active";
+                    }
+                    lastPrice = currentPrice;
+                }
+
+                if (data.msg_type === 'buy') {
+                    if (data.buy) {
+                        document.getElementById('tradeMessage').innerText = `Executed! ID: ${data.buy.contract_id}`;
+                    } else if (data.error) {
+                        document.getElementById('tradeMessage').innerText = `Error: ${data.error.message}`;
+                    }
+                }
+            };
+
+            ws.onclose = function() {
+                document.getElementById('connStatus').innerText = "DISCONNECTED";
+                document.getElementById('connStatus').classList.remove('connected');
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+
+        function executeTrade(contractType) {
+            if (!userToken) {
+                alert("Please log in with Deriv first!");
+                return;
+            }
+            document.getElementById('tradeMessage').innerText = "Processing order...";
+            ws.send(JSON.stringify({
+                buy: 1,
+                price: 10,
+                parameters: {
+                    amount: 10,
+                    basis: "stake",
+                    currency: "USD",
+                    duration: 5,
+                    duration_unit: "t",
+                    symbol: "R_75",
+                    contract_type: contractType
+                }
+            }));
+        }
+
+        function logoutSession() {
+            localStorage.removeItem('deriv_token');
+            userToken = "";
+            window.location.href = window.location.pathname;
+        }
+
+        function toggleBot() {
+            if (!userToken) {
+                alert("Please log in with Deriv first!");
+                return;
+            }
+            botActive = !botActive;
+            let btn = document.getElementById('botToggleBtn');
+            let stateLbl = document.getElementById('botState');
+
+            if (botActive) {
+                btn.innerText = "STOP AI BOT";
+                btn.style.background = "#ef4444";
+                stateLbl.innerText = "AI SCANNING ACTIVE";
+                stateLbl.style.color = "#22c55e";
+                document.getElementById('botLog').innerText = "AI Bot: Monitoring live ticks...";
+
+                botInterval = setInterval(() => {
+                    if (!botActive) return;
+
+                    let dirText = document.getElementById('priceDirection').innerText;
+                    if (dirText.includes("Bullish")) {
+                        document.getElementById('botLog').innerText = "AI Trigger: Bullish pressure confirmed. Executing CALL...";
+                        executeTrade('CALL');
+                    } else if (dirText.includes("Bearish")) {
+                        document.getElementById('botLog').innerText = "AI Trigger: Bearish momentum confirmed. Executing PUT...";
+                        executeTrade('PUT');
+                    }
+                }, 5000);
+
+            } else {
+                clearInterval(botInterval);
+                btn.innerText = "START AI BOT 🤖";
+                btn.style.background = "#8b5cf6";
+                stateLbl.innerText = "IDLE / STOPPED";
+                stateLbl.style.color = "#ef4444";
+                document.getElementById('botLog').innerText = "AI Bot paused.";
+            }
+        }
+    </script>
 </body>
-</html>
+                                          </html>
+                      
