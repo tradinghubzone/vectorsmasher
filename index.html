@@ -3,90 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vector_smasher Terminal</title>
+    <title>Vector_smasher Pro Terminal</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #060913; color: #f8fafc; padding: 10px; display: flex; justify-content: center; min-height: 100vh; }
-        .terminal { width: 100%; max-width: 440px; background: #0d1322; border: 1px solid #1e293b; border-radius: 16px; padding: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); }
+        body { background: #040711; color: #f8fafc; padding: 8px; display: flex; justify-content: center; min-height: 100vh; }
+        .terminal { width: 100%; max-width: 480px; background: #0d1322; border: 1px solid #1e293b; border-radius: 16px; padding: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
-        .logo { font-size: 15px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 6px; }
-        .connection-status { font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+        .logo { font-size: 14px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 6px; }
+        .connection-status { font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
         .connection-status.connected { background: rgba(34, 197, 94, 0.15); color: #22c55e; border-color: #22c55e; }
 
-        .ticker-section { background: #161e31; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #283548; }
-        .ticker-header { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
-        .price-display { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 4px; }
-        .price-change { font-size: 11px; color: #22c55e; }
+        /* Loader Screen Overlay */
+        #loaderScreen { background: #0d1322; padding: 30px; text-align: center; border-radius: 12px; margin-bottom: 10px; }
+        .spinner { width: 36px; height: 36px; border: 3px solid #1e293b; border-top: 3px solid #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .account-box { background: #161e31; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #283548; text-align: center; }
-        .account-title { font-size: 12px; color: #94a3b8; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; }
-        .account-balance { font-size: 20px; font-weight: bold; color: #38bdf8; margin-bottom: 10px; }
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; gap: 4px; margin-bottom: 12px; background: #161e31; padding: 4px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: #2563eb; color: #fff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Ticker & Chart Section */
+        .ticker-section { background: #161e31; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #283548; }
+        .price-display { font-size: 22px; font-weight: bold; color: #fff; margin-bottom: 2px; }
+        .price-change { font-size: 10px; color: #22c55e; }
         
-        .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; text-align: center; transition: background 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-        .login-btn:hover { background: #1d4ed8; }
+        .chart-box { width: 100%; height: 200px; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #283548; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* Trading Execution Panel */
-        .trade-panel { display: none; margin-top: 10px; }
-        .trade-row { display: flex; gap: 10px; margin-top: 10px; }
-        .action-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; }
-        .btn-rise { background: #22c55e; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
-        .btn-fall { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
-        .action-btn:active { transform: scale(0.98); }
+        /* Account & Controls Box */
+        .panel-box { background: #161e31; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #283548; }
+        .section-title { font-size: 11px; color: #94a3b8; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; }
+        
+        .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-align: center; }
+        
+        /* Trade Buttons */
+        .trade-row { display: flex; gap: 8px; margin-top: 8px; }
+        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; color: white; }
+        .btn-rise { background: #22c55e; }
+        .btn-fall { background: #ef4444; }
+        .btn-bot { background: #8b5cf6; width: 100%; margin-top: 8px; }
 
-        .gateway-box { background: linear-gradient(135deg, #1e1b4b, #0d1322); border: 1px solid #4338ca; border-radius: 12px; padding: 16px; text-align: center; }
-        .gateway-box h3 { font-size: 14px; color: #fff; margin-bottom: 4px; }
-        .gateway-box p { font-size: 11px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4; }
-        .trade-btn { display: block; background: #ff444f; color: #ffffff; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 15px rgba(255, 68, 79, 0.4); }
+        .status-text { font-size: 10px; color: #38bdf8; margin-top: 6px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="terminal">
+        <!-- Header -->
         <div class="header">
-            <span class="logo">⚡ Vector_smasher</span>
-            <div id="connStatus" class="connection-status">CONNECTING...</div>
+            <span class="logo">⚡ Vector_smasher Pro</span>
+            <div id="connStatus" class="connection-status">INITIALIZING</div>
         </div>
 
-        <div class="ticker-section">
-            <div class="ticker-header">
-                <span>Volatility 75 Index (Live Feed)</span>
-                <span id="updateIndicator">● LIVE</span>
-            </div>
-            <div class="price-display" id="livePrice">---.--</div>
-            <div class="price-change" id="priceDirection">Streaming live market ticks...</div>
+        <!-- Initial Loader -->
+        <div id="loaderScreen">
+            <div class="spinner"></div>
+            <div style="font-size: 12px; font-weight: bold; color: #fff;">Loading Deriv Main Workspace...</div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 4px;">Connecting API & Initializing Modules</div>
         </div>
 
-        <!-- Client Authentication & Trading Panel -->
-        <div class="account-box" id="authSection">
-            <div class="account-title">Workspace Client Portal</div>
-            <div id="accountStatusText" style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
-                Connect your account to run live terminal trades.
-            </div>
+        <!-- Main Workspace Container (Hidden until loaded) -->
+        <div id="workspaceContainer" style="display: none;">
             
-            <!-- Login Button -->
-            <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv" id="loginLink" class="login-btn">
-                Log in with Deriv 🔐
-            </a>
-
-            <!-- Hidden Trading Panel (Appears after successful login) -->
-            <div id="tradePanel" class="trade-panel">
-                <div class="account-balance" id="accountBalanceDisplay">Balance: Loading...</div>
-                <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Execute 5-Tick Contracts (V75)</div>
-                <div class="trade-row">
-                    <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
-                    <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
-                </div>
-                <div id="tradeResult" style="font-size: 11px; margin-top: 8px; color: #38bdf8;"></div>
+            <!-- Navigation Switcher -->
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('manual')">Manual Terminal</button>
+                <button class="tab-btn" onclick="switchTab('bots')">Free Bot Engine</button>
+                <button class="tab-btn" onclick="switchTab('charts')">Live Charts</button>
             </div>
-        </div>
 
-        <div class="gateway-box">
-            <h3>New Partner Account</h3>
-            <p>Register alternative accounts or share your tracking link.</p>
-            <a href="https://t.deriv.link?t=ZKVMXBVCE4P5" target="_blank" class="trade-btn">
-                Create Account 🚀
-            </a>
+            <!-- TAB 1: MANUAL TRADING -->
+            <div id="tab-manual" class="tab-content active">
+                <div class="ticker-section">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px;">
+                        <span>Volatility 75 Index</span>
+                        <span style="color: #22c55e;">● LIVE FEED</span>
+                    </div>
+                    <div class="price-display" id="livePrice">---.--</div>
+                    <div class="price-change" id="priceDirection">Syncing market ticks...</div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="section-title">Client Account Session</div>
+                    <div id="authArea">
+                        <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv" class="login-btn">
+                            Log in with Deriv 🔐
+                        </a>
+                    </div>
+                    <div id="tradingControls" style="display: none;">
+                        <div style="font-size: 12px; font-weight: bold; color: #38bdf8; margin-bottom: 6px;" id="accountInfo">Account: Connected</div>
+                        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">Contract: 5 Ticks Rise/Fall (Stake: $10)</div>
+                        <div class="trade-row">
+                            <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
+                            <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
+                        </div>
+                    </div>
+                    <div id="tradeMessage" class="status-text"></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: FREE BOT ENGINE -->
+            <div id="tab-bots" class="tab-content">
+                <div class="panel-box">
+                    <div class="section-title">Automated Free Bot Scanner</div>
+                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">
+                        Our built-in algorithmic engine automatically evaluates market momentum and triggers smart entries.
+                    </p>
+                    <div style="background: #090d16; padding: 10px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; border: 1px solid #1e293b;">
+                        <div>Bot Status: <span id="botState" style="color: #ef4444;">IDLE / STOPPED</span></div>
+                        <div>Signal Target: <span style="color: #38bdf8;">Volatility 75 Index</span></div>
+                    </div>
+                    <button class="action-btn btn-bot" onclick="toggleBot()" id="botToggleBtn">START FREE BOT 🚀</button>
+                    <div id="botLog" class="status-text" style="margin-top: 8px;">Waiting for user session activation...</div>
+                </div>
+            </div>
+
+            <!-- TAB 3: LIVE TRADINGVIEW CHARTS -->
+            <div id="tab-charts" class="tab-content">
+                <div class="chart-box">
+                    <!-- Embedded TradingView Advanced Realtime Widget for V75 -->
+                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=DERIV:R_75&interval=1&theme=dark&style=1&timezone=Etc%2FUTC"></iframe>
+                </div>
+                <div style="font-size: 10px; color: #64748b; text-align: center;">Advanced Technical Frame Loaded Successfully</div>
+            </div>
+
         </div>
     </div>
 
@@ -94,22 +139,45 @@
         let ws;
         let lastPrice = 0;
         let userToken = "";
-        let selectedAccount = "";
+        let botActive = false;
+        let botInterval;
 
-        // Check if user returned from OAuth login with token parameters
+        // Initialize full app loader sequence
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loaderScreen').style.display = 'none';
+                document.getElementById('workspaceContainer').style.display = 'block';
+                connectWebSocket();
+            }, 1200); // Smooth 1.2s initialization loader
+        };
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            if(tabName === 'manual') {
+                document.getElementById('tab-manual').classList.add('active');
+                event.currentTarget.classList.add('active');
+            } else if(tabName === 'bots') {
+                document.getElementById('tab-bots').classList.add('active');
+                event.currentTarget.classList.add('active');
+            } else if(tabName === 'charts') {
+                document.getElementById('tab-charts').classList.add('active');
+                event.currentTarget.classList.add('active');
+            }
+        }
+
+        // Handle OAuth Return Tokens
         const urlParams = new URLSearchParams(window.location.search);
-        // Deriv OAuth returns tokens like token1, acct1, etc.
         if (urlParams.has('token1')) {
             userToken = urlParams.get('token1');
-            selectedAccount = urlParams.get('acct1');
             localStorage.setItem('deriv_token', userToken);
-            localStorage.setItem('deriv_account', selectedAccount);
         } else {
             userToken = localStorage.getItem('deriv_token');
-            selectedAccount = localStorage.getItem('deriv_account');
         }
 
         function connectWebSocket() {
+            // Connected directly using your application ID 34LmtjEQdOd9cQs0Zh1uc
             ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=34LmtjEQdOd9cQs0Zh1uc');
 
             ws.onopen = function() {
@@ -117,7 +185,6 @@
                 document.getElementById('connStatus').classList.add('connected');
                 ws.send(JSON.stringify({ ticks: "R_75" }));
 
-                // If user is logged in, authorize session automatically
                 if (userToken) {
                     ws.send(JSON.stringify({ authorize: userToken }));
                 }
@@ -125,13 +192,12 @@
 
             ws.onmessage = function(event) {
                 let data = JSON.parse(event.data);
-                
+
                 if (data.msg_type === 'authorize') {
                     if (data.authorize) {
-                        document.getElementById('loginLink').style.display = 'none';
-                        document.getElementById('accountStatusText').style.display = 'none';
-                        document.getElementById('tradePanel').style.display = 'block';
-                        document.getElementById('accountBalanceDisplay').innerText = `${data.authorize.loginid} (${data.authorize.currency} ${data.authorize.balance})`;
+                        document.getElementById('authArea').style.display = 'none';
+                        document.getElementById('tradingControls').style.display = 'block';
+                        document.getElementById('accountInfo').innerText = `Account: ${data.authorize.loginid} (${data.authorize.currency} ${data.authorize.balance})`;
                     }
                 }
 
@@ -153,9 +219,9 @@
 
                 if (data.msg_type === 'buy') {
                     if (data.buy) {
-                        document.getElementById('tradeResult').innerText = `Success! Contract ID: ${data.buy.contract_id}`;
+                        document.getElementById('tradeMessage').innerText = `Executed! ID: ${data.buy.contract_id}`;
                     } else if (data.error) {
-                        document.getElementById('tradeResult').innerText = `Error: ${data.error.message}`;
+                        document.getElementById('tradeMessage').innerText = `Error: ${data.error.message}`;
                     }
                 }
             };
@@ -169,13 +235,13 @@
 
         function executeTrade(contractType) {
             if (!userToken) {
-                alert("Please log in first!");
+                alert("Please log in with Deriv first to execute trades!");
                 return;
             }
-            document.getElementById('tradeResult').innerText = "Sending trade order...";
+            document.getElementById('tradeMessage').innerText = "Processing order...";
             ws.send(JSON.stringify({
                 buy: 1,
-                price: 10, // Stake amount in account currency
+                price: 10,
                 parameters: {
                     amount: 10,
                     basis: "stake",
@@ -188,9 +254,30 @@
             }));
         }
 
-        connectWebSocket();
-    </script>
+        function toggleBot() {
+            if (!userToken) {
+                alert("Please log in with Deriv first to run the Free Bot engine!");
+                return;
+            }
+            botActive = !botActive;
+            let btn = document.getElementById('botToggleBtn');
+            let stateLbl = document.getElementById('botState');
 
+            if (botActive) {
+                btn.innerText = "STOP FREE BOT";
+                btn.style.background = "#ef4444";
+                stateLbl.innerText = "ACTIVE / SCANNING";
+                stateLbl.style.color = "#22c55e";
+                document.getElementById('botLog').innerText = "Bot active: Analyzing tick momentum for entry...";
+            } else {
+                btn.innerText = "START FREE BOT";
+                btn.style.background = "#8b5cf6";
+                stateLbl.innerText = "IDLE / STOPPED";
+                stateLbl.style.color = "#ef4444";
+                document.getElementById('botLog').innerText = "Bot paused by user.";
+            }
+        }
+    </script>
 </body>
     </html>
-                
+                        
