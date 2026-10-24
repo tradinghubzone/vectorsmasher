@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="deriv-site-verification" content="778d055e054ae6746bade3fb098bcee6e4e8bb503f3ed8927877b5194bf2a952">
     <title>Vector_smasher Pro Terminal</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -82,8 +83,8 @@
                 <div class="panel-box">
                     <div class="section-title">Client Account Session</div>
                     <div id="authArea">
-                        <!-- Direct OAuth Link -->
-                        <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv" class="login-btn">
+                        <!-- OAuth Link with explicit redirect URL -->
+                        <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv&redirect_uri=https://tradinghubzone.github.io/vectorsmasher/" class="login-btn">
                             Log in with Deriv 🔐
                         </a>
                     </div>
@@ -131,13 +132,12 @@
         let userToken = "";
         let botActive = false;
 
-        // 1. Instantly check URL hash or query parameters for Deriv login tokens
+        // 1. Capture Deriv login tokens from URL hash or query parameters
         function checkOAuthTokens() {
             const hash = window.location.hash.substring(1);
             const hashParams = new URLSearchParams(hash);
             const queryParams = new URLSearchParams(window.location.search);
 
-            // Deriv returns tokens like token1=xxxx&acct1=CR12345
             for (let [key, value] of hashParams.entries()) {
                 if (key.startsWith('token')) {
                     userToken = value;
@@ -151,7 +151,6 @@
                 }
             }
 
-            // Fallback to saved local storage token if available
             if (!userToken) {
                 userToken = localStorage.getItem('deriv_token');
             }
@@ -164,7 +163,6 @@
                 document.getElementById('loaderScreen').style.display = 'none';
                 document.getElementById('workspaceContainer').style.display = 'block';
                 
-                // If token exists, show trading controls immediately
                 if (userToken) {
                     document.getElementById('authArea').style.display = 'none';
                     document.getElementById('tradingControls').style.display = 'block';
@@ -212,7 +210,6 @@
                         document.getElementById('tradingControls').style.display = 'block';
                         document.getElementById('accountInfo').innerText = `Account: ${data.authorize.loginid} (${data.authorize.currency} ${data.authorize.balance})`;
                     } else if (data.error) {
-                        // Token invalid/expired
                         logoutSession();
                     }
                 }
@@ -273,7 +270,7 @@
         function logoutSession() {
             localStorage.removeItem('deriv_token');
             userToken = "";
-            window.location.href = window.location.pathname; // Clean reset
+            window.location.href = window.location.pathname;
         }
 
         function toggleBot() {
