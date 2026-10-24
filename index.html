@@ -8,7 +8,15 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background: #030712; color: #f8fafc; padding: 6px; display: flex; justify-content: center; min-height: 100vh; background-image: radial-gradient(circle at 50% 30%, #0f172a 0%, #030712 70%); }
-        .terminal { width: 100%; max-width: 480px; background: rgba(13, 19, 34, 0.92); backdrop-filter: blur(12px); border: 1px solid #1e293b; border-radius: 16px; padding: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
+        
+        /* Fullscreen Professional Startup Loader */
+        #startupLoader { position: fixed; inset: 0; background: #030712; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; transition: opacity 0.4s ease; }
+        .loader-logo { font-size: 20px; font-weight: bold; color: #38bdf8; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .spinner { width: 42px; height: 42px; border: 3px solid #1e293b; border-top: 3px solid #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader-status { font-size: 11px; color: #94a3b8; font-weight: 500; letter-spacing: 0.5px; }
+
+        .terminal { width: 100%; max-width: 480px; background: rgba(13, 19, 34, 0.95); backdrop-filter: blur(12px); border: 1px solid #1e293b; border-radius: 16px; padding: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); display: none; }
         
         /* Top Utility Bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #1e293b; }
@@ -18,7 +26,7 @@
         /* Market Ticker Scroller */
         .ticker-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; scrollbar-width: none; }
         .ticker-bar::-webkit-scrollbar { display: none; }
-        .ticker-chip { background: #111827; border: 1px solid #1f2937; padding: 6px 10px; border-radius: 8px; font-size: 10px; color: #94a3b8; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+        .ticker-chip { background: #111827; border: 1px solid #1f2937; padding: 6px 10px; border-radius: 8px; font-size: 10px; color: #94a3b8; white-space: nowrap; flex-shrink: 0; }
         .ticker-chip span { color: #fff; font-weight: bold; margin-left: 4px; }
 
         /* Navigation Tabs */
@@ -31,8 +39,8 @@
 
         /* Quick Action Cards */
         .section-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .action-card { background: linear-gradient(135deg, #111827 0%, #0f172a 100%); border: 1px solid #1f2937; border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-        .action-card:hover { border-color: #38bdf8; background: linear-gradient(135deg, #162032 0%, #111827 100%); }
+        .action-card { background: linear-gradient(135deg, #111827 0%, #0f172a 100%); border: 1px solid #1f2937; border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; position: relative; }
+        .action-card:active { transform: scale(0.98); background: #1e293b; }
         .action-card.premium { border-color: #eab308; }
         
         .card-left { display: flex; align-items: center; gap: 10px; }
@@ -40,11 +48,10 @@
         .card-title { font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 2px; }
         .card-desc { font-size: 10px; color: #94a3b8; }
         .card-arrow { width: 24px; height: 24px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #cbd5e1; }
-        
         .badge-tag { background: #3b82f6; color: #fff; font-size: 8px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold; }
 
-        /* Login & Controls Section */
-        .panel-box { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; margin-top: 10px; }
+        /* Panels & Controls */
+        .panel-box { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; margin-top: 6px; }
         .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-align: center; }
         .trade-row { display: flex; gap: 8px; margin-top: 10px; }
         .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; }
@@ -52,16 +59,22 @@
         .btn-fall { background: #ef4444; }
         .btn-bot { background: #8b5cf6; width: 100%; margin-top: 8px; }
 
-        /* AI Floating Orb Styling */
-        .ai-floating-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #3b82f6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); border: 2px solid rgba(255,255,255,0.2); cursor: pointer; z-index: 100; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); } }
+        /* Floating AI Orb */
+        .ai-floating-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #3b82f6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); border: 2px solid rgba(255,255,255,0.2); cursor: pointer; z-index: 100; }
 
         .status-text { font-size: 10px; color: #38bdf8; margin-top: 6px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="terminal">
+    <!-- Professional Startup Loader -->
+    <div id="startupLoader">
+        <div class="loader-logo">⚡ Vector_smasher Pro</div>
+        <div class="spinner"></div>
+        <div class="loader-status" id="loaderText">Initializing secure environment...</div>
+    </div>
+
+    <div class="terminal" id="mainTerminal">
         <!-- Top Bar -->
         <div class="top-bar">
             <div class="user-badge" id="userBadge"><span>⚡</span> VS</div>
@@ -85,11 +98,11 @@
             <button class="tab-btn" onclick="switchTab('ai', event)">🤖 AI Engine</button>
         </div>
 
-        <!-- TAB 1: DASHBOARD (Quick Actions) -->
+        <!-- TAB 1: DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active">
             <div class="section-label">Quick Actions</div>
             
-            <div class="action-card" onclick="switchTab('builder', event)">
+            <div class="action-card" onclick="switchTab('builder')">
                 <div class="card-left">
                     <div class="card-icon">📁</div>
                     <div>
@@ -100,7 +113,7 @@
                 <div class="card-arrow">›</div>
             </div>
 
-            <div class="action-card premium" onclick="alert('Premium AI strategies unlocked via active session!')">
+            <div class="action-card premium" onclick="alert('Premium high-win strategies unlocked via active session!')">
                 <div class="card-left">
                     <div class="card-icon" style="background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.3); color: #eab308;">👑</div>
                     <div>
@@ -111,7 +124,7 @@
                 <div class="card-arrow">›</div>
             </div>
 
-            <div class="action-card" onclick="switchTab('ai', event)">
+            <div class="action-card" onclick="switchTab('ai')">
                 <div class="card-left">
                     <div class="card-icon" style="background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); color: #8b5cf6;">🚀</div>
                     <div>
@@ -122,7 +135,7 @@
                 <div class="card-arrow">›</div>
             </div>
 
-            <div class="action-card" onclick="switchTab('manual', event)">
+            <div class="action-card" onclick="switchTab('manual')">
                 <div class="card-left">
                     <div class="card-icon" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e;">👆</div>
                     <div>
@@ -138,7 +151,7 @@
         <div id="tab-builder" class="tab-content">
             <div class="section-label">Initializing Vector Manual & Bot Terminal</div>
             <div class="panel-box">
-                <div style="font-size: 11px; font-weight: bold; color: #38bdf8; margin-bottom: 6px;">Volatility 75 Index (R_75) Live Feed</div>
+                <div style="font-size: 11px; font-weight: bold; color: #38bdf8; margin-bottom: 4px;">Volatility 75 Index (R_75) Live Feed</div>
                 <div style="font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 8px;" id="mainPriceDisplay">---.--</div>
                 
                 <div id="authArea">
@@ -175,9 +188,9 @@
             </div>
         </div>
 
-        <!-- Hidden tab container for manual tab click -->
+        <!-- MANUAL TAB VIEW -->
         <div id="tab-manual" class="tab-content">
-            <div class="section-label">Manual Execution Panel</div>
+            <div class="section-label">Initializing Vector Manual Execution</div>
             <div class="panel-box">
                 <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Quick Stake ($10 USD)</div>
                 <div class="trade-row">
@@ -190,7 +203,7 @@
     </div>
 
     <!-- Floating AI Quick Orb -->
-    <div class="ai-floating-btn" onclick="switchTab('ai', event)" title="Vector AI Bot">AI</div>
+    <div class="ai-floating-btn" onclick="switchTab('ai')" title="Vector AI Bot">AI</div>
 
     <script>
         let ws;
@@ -198,7 +211,23 @@
         let aiActive = false;
         let aiInterval;
 
-        // Check URL or LocalStorage for OAuth token
+        // Simulate Professional Startup Loading Sequence
+        window.onload = function() {
+            const statusText = document.getElementById('loaderText');
+            
+            setTimeout(() => { statusText.innerText = "Connecting to Deriv WebSockets..."; }, 400);
+            setTimeout(() => { statusText.innerText = "Verifying security tokens..."; }, 800);
+            setTimeout(() => {
+                checkOAuthTokens();
+                document.getElementById('startupLoader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('startupLoader').style.display = 'none';
+                    document.getElementById('mainTerminal').style.display = 'block';
+                    connectWebSocket();
+                }, 400);
+            }, 1200);
+        };
+
         function checkOAuthTokens() {
             const hash = window.location.hash.substring(1);
             const hashParams = new URLSearchParams(hash);
@@ -219,16 +248,11 @@
             if (!userToken) {
                 userToken = localStorage.getItem('deriv_token');
             }
-        }
-        checkOAuthTokens();
-
-        window.onload = function() {
             if (userToken) {
                 document.getElementById('authArea').style.display = 'none';
                 document.getElementById('tradingControls').style.display = 'block';
             }
-            connectWebSocket();
-        };
+        }
 
         function switchTab(tabName, evt) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -241,24 +265,22 @@
             } else if(tabName === 'ai') {
                 document.getElementById('tab-ai').classList.add('active');
             } else if(tabName === 'manual') {
-                document.getElementById('tab-builder').classList.add('active'); // fallback
+                document.getElementById('tab-manual').classList.add('active');
             }
 
-            if(evt && evt.currentTarget && evt.currentTarget.classList.contains('tab-btn')) {
+            if(evt && evt.currentTarget) {
                 evt.currentTarget.classList.add('active');
             }
         }
 
         function connectWebSocket() {
-            // Using your exact App ID 34LmtjEQdOd9cQs0Zh1uc
             ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=34LmtjEQdOd9cQs0Zh1uc');
 
             ws.onopen = function() {
                 document.getElementById('connStatus').innerText = "● ONLINE";
-                document.getElementById('connStatusstyle' || 'connStatus').style.color = "#22c55e";
+                document.getElementById('connStatus').style.color = "#22c55e";
                 document.getElementById('userBadge').innerHTML = "<span>⚡</span> VS PRO";
                 
-                // Subscribe to multiple symbols for the ticker bar
                 ws.send(JSON.stringify({ ticks: "R_10" }));
                 ws.send(JSON.stringify({ ticks: "R_25" }));
                 ws.send(JSON.stringify({ ticks: "R_50" }));
@@ -300,6 +322,7 @@
 
             ws.onclose = function() {
                 document.getElementById('connStatus').innerText = "● RECONNECTING";
+                document.getElementById('connStatus').style.color = "#ef4444";
                 setTimeout(connectWebSocket, 3000);
             };
         }
@@ -357,4 +380,10 @@
         }
 
         function logoutSession() {
-            localStorage.removeItem('deri
+            localStorage.removeItem('deriv_token');
+            userToken = "";
+            window.location.href = window.location.pathname;
+        }
+    </script>
+</body>
+</html>
