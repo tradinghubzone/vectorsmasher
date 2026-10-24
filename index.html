@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="deriv-site-verification" content="4ce364617b68898181a35029fb4629065ecf4af876caf90e030c948ce24556cc">
-    <title>Vector_smasher Pro - Trading Workspace</title>
+    <title>Vector_smasher Pro - DTRADER Workspace</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
-        /* Dynamic Theme Variables */
         :root {
             --bg-main: #030712;
             --bg-card: #0b1120;
@@ -17,15 +16,6 @@
             --text-muted: #94a3b8;
             --accent-blue: #38bdf8;
             --accent-red: #ef4444;
-        }
-        body.light-theme {
-            --bg-main: #f1f5f9;
-            --bg-card: #ffffff;
-            --border-color: #cbd5e1;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent-blue: #0284c7;
-            --accent-red: #dc2626;
         }
 
         body { 
@@ -36,107 +26,67 @@
             justify-content: center; 
             align-items: flex-start; 
             padding: 4px; 
-            background-image: radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.15) 0%, transparent 40%), 
-                              radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
-                              linear-gradient(135deg, #030712 0%, #0b1120 100%);
-            transition: background 0.3s ease;
+            background-image: radial-gradient(circle at 50% 20%, #0f172a 0%, #030712 80%);
         }
 
-        /* BOOT SEQUENCE LOADER */
-        #bootLoader { 
-            position: fixed; inset: 0; 
-            background: radial-gradient(circle at 50% 30%, rgba(239,68,68,0.2) 0%, #030712 90%), 
-                        url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop') no-repeat center center/cover;
-            background-blend-mode: overlay;
-            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; transition: opacity 0.5s ease; 
-        }
-        .boot-card { background: rgba(13, 19, 34, 0.92); backdrop-filter: blur(16px); border: 1px solid var(--accent-red); border-radius: 16px; padding: 24px; width: 100%; max-width: 380px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
-        .boot-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 4px; }
-        .boot-subtitle { font-size: 11px; color: var(--accent-red); margin-bottom: 15px; }
-        .boot-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; }
-        .boot-dot { width: 8px; height: 8px; background: var(--accent-red); border-radius: 50%; animation: pulseDot 1.2s infinite ease-in-out; }
-        .boot-dot:nth-child(2) { animation-delay: 0.2s; }
-        .boot-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes pulseDot { 0%, 100% { transform: scale(0.8); opacity: 0.4; } 50% { transform: scale(1.2); opacity: 1; } }
-        .progress-bar-bg { width: 100%; height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
-        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-red), var(--accent-blue)); transition: width 0.1s linear; }
-        .boot-status { font-size: 11px; color: var(--accent-blue); font-weight: 500; }
+        /* DTRADER LOADING SCREEN ANIMATION */
+        #dtraderLoader { position: fixed; inset: 0; background: #030712; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; transition: opacity 0.4s ease; }
+        .dt-spinner { width: 70px; height: 70px; border: 4px solid #1e293b; border-top: 4px solid var(--accent-blue); border-right: 4px solid #8b5cf6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
+        .dt-inner-text { font-weight: bold; font-size: 14px; color: var(--accent-blue); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .dt-brand { font-size: 18px; font-weight: 800; letter-spacing: 3px; color: #fff; margin-bottom: 12px; }
+        .dt-brand span { color: var(--accent-blue); }
+        .dt-dots { display: flex; gap: 6px; }
+        .dt-dot { width: 8px; height: 8px; background: var(--accent-blue); border-radius: 50%; animation: pulseDot 1s infinite ease-in-out; }
+        .dt-dot:nth-child(2) { animation-delay: 0.2s; background: #8b5cf6; }
+        .dt-dot:nth-child(3) { animation-delay: 0.4s; background: var(--accent-red); }
 
-        /* MAIN APP CONTAINERS */
-        .app-container { width: 100%; max-width: 480px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; min-height: 98vh; display: none; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); transition: all 0.3s ease; }
+        /* MAIN APP CONTAINER */
+        .app-container { width: 100%; max-width: 480px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; min-height: 98vh; display: none; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.9); }
         
-        /* WELCOME SCREEN */
-        #welcomeScreen { display: block; padding: 10px; }
-        .welcome-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-        .brand-box { font-size: 13px; font-weight: bold; color: var(--text-main); }
-        .brand-sub { font-size: 9px; color: var(--text-muted); display: block; }
-        .welcome-auth-btns { display: flex; gap: 6px; }
-        
-        .hero-welcome-title { font-size: 22px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; text-align: center; }
-        .hero-welcome-desc { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.4; margin-bottom: 20px; }
-        
-        .auth-box-card { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center; }
-        .auth-input-btn { display: block; width: 100%; background: var(--accent-blue); color: #030712; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-bottom: 10px; text-align: center; border: none; cursor: pointer; }
-        .auth-input-btn.dark { background: #1e293b; color: #fff; border: 1px solid var(--border-color); }
-
-        .feature-box-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .boxed-feature { background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-main); letter-spacing: 0.5px; }
-
-        /* WORKSPACE CONTENT SECTIONS */
-        .workspace-pane { display: none; }
-        .workspace-pane.active { display: block; }
-
         /* Top Utility Bar */
         .top-utility-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
         .menu-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .user-avatar { background: #0284c7; color: #fff; font-weight: bold; font-size: 11px; padding: 6px 10px; border-radius: 50%; }
         .switch-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font-size: 11px; font-weight: bold; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
         .balance-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; color: #22c55e; display: flex; align-items: center; gap: 4px; cursor: pointer; }
 
-        /* Advanced Feature Navigation Bar */
+        /* Navigation Bar */
         .feature-nav-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
         .feature-nav-bar::-webkit-scrollbar { display: none; }
-        .feature-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+        .feature-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
         .feature-tab.active { background: #1e293b; border-color: var(--accent-blue); color: #fff; }
 
-        /* Market Ticker Scroller Bar */
-        .ticker-scroller { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
-        .ticker-scroller::-webkit-scrollbar { display: none; }
-        .ticker-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 10px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; cursor: pointer; }
-        .ticker-chip.active { border-color: var(--accent-blue); background: #1e293b; color: #fff; }
-        .ticker-chip span { color: #22c55e; font-weight: bold; margin-left: 4px; }
+        /* Workspace Panes */
+        .workspace-pane { display: none; }
+        .workspace-pane.active { display: block; }
 
-        /* Workspace Hero Banner */
-        .hero-banner { background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-        .hero-title { font-size: 16px; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
-        .hero-quote { font-size: 10px; color: var(--text-muted); font-style: italic; margin-bottom: 8px; }
-        .hero-meta { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-muted); }
-        .live-dot { color: #22c55e; font-weight: bold; }
+        /* Asset Selector Card */
+        .asset-selector-box { background: #111827; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .asset-title { font-size: 13px; font-weight: bold; color: #fff; }
+        .asset-sub { font-size: 10px; color: #22c55e; margin-top: 2px; }
 
-        /* Quick Action Cards */
-        .section-label { font-size: 10px; color: var(--accent-blue); text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .action-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; }
-        .action-card:hover { border-color: var(--accent-blue); }
-        .card-left { display: flex; align-items: center; gap: 10px; }
-        .card-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; font-size: 15px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .card-title { font-size: 11px; font-weight: bold; color: var(--text-main); margin-bottom: 2px; }
-        .card-desc { font-size: 9px; color: var(--text-muted); }
-        .card-number { font-size: 11px; font-weight: bold; color: var(--text-muted); }
-        .card-arrow { width: 22px; height: 22px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #cbd5e1; }
-        .badge-tag { background: var(--accent-blue); color: #030712; font-size: 8px; padding: 2px 5px; border-radius: 4px; margin-left: 6px; font-weight: bold; }
+        /* Chart Box */
+        .chart-box { width: 100%; height: 180px; background: #030712; border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 10px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .live-price-tag { position: absolute; right: 12px; top: 12px; background: #111827; border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff; }
 
-        /* Manual Trading & Digit Box Styles (0 to 9) */
-        .panel-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-        .digit-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
-        .digit-btn { background: #1e293b; border: 1px solid var(--border-color); color: #fff; padding: 10px 6px; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; font-size: 12px; position: relative; }
-        .digit-btn.selected { background: var(--accent-blue); color: #030712; border-color: #fff; box-shadow: 0 0 12px rgba(56, 189, 248, 0.6); }
-        .digit-pct { font-size: 8px; color: var(--text-muted); display: block; margin-top: 2px; }
-        .digit-btn.selected .digit-pct { color: #030712; font-weight: bold; }
+        /* Trade Type & Accumulator Selector */
+        .trade-type-box { background: #111827; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        
+        /* Stake Panel */
+        .stake-panel { background: #111827; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .stake-row { display: flex; align-items: center; background: #030712; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; margin-top: 6px; }
+        .stake-btn { background: #1e293b; color: #fff; border: none; padding: 12px 16px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .stake-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 16px; font-weight: bold; text-align: center; outline: none; }
+        
+        /* Error Alert Banner */
+        .error-banner { background: #dc2626; color: #fff; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: bold; text-align: center; margin-top: 10px; }
 
-        .trade-row { display: flex; gap: 8px; margin-top: 10px; }
-        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; text-align: center; }
-        .btn-rise { background: #22c55e; }
-        .btn-fall { background: var(--accent-red); }
-        .btn-bot { background: #8b5cf6; width: 100%; margin-top: 8px; }
+        /* Asset Dropdown Modal */
+        #assetModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: #0d1322; border: 1px solid var(--border-color); border-radius: 14px; width: 100%; max-width: 360px; padding: 16px; }
+        .modal-item { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 12px; font-weight: bold; color: #fff; cursor: pointer; display: flex; justify-content: space-between; }
+        .modal-item:hover { background: #1e293b; }
 
         /* Animated Blue AI Floating Button */
         .ai-floating-btn { position: fixed; bottom: 20px; right: 20px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 0 25px rgba(56, 189, 248, 0.8); border: 2px solid rgba(255,255,255,0.4); cursor: pointer; z-index: 100; animation: bluePulse 2s infinite ease-in-out; }
@@ -150,37 +100,28 @@
 </head>
 <body>
 
-    <!-- BOOT SEQUENCE LOADER -->
-    <div id="bootLoader">
-        <div class="boot-card">
-            <div class="boot-title">Vector_smasher</div>
-            <div class="boot-subtitle">Loading Trading Workspace...</div>
-            <div class="boot-dots">
-                <div class="boot-dot"></div>
-                <div class="boot-dot"></div>
-                <div class="boot-dot"></div>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar1"></div>
-            </div>
-            <div class="boot-status" id="bootStatusText1">Please wait while we connect to server... (0%)</div>
+    <!-- DTRADER BOOT ANIMATION LOADER -->
+    <div id="dtraderLoader">
+        <div class="dt-spinner">
+            <div class="dt-inner-text">DT</div>
+        </div>
+        <div class="dt-brand">D T R A D E R</div>
+        <div class="dt-dots">
+            <div class="dt-dot"></div>
+            <div class="dt-dot"></div>
+            <div class="dt-dot"></div>
         </div>
     </div>
 
-    <!-- D-BOT SEQUENCE LOADER -->
-    <div id="dbotLoader" style="display: none; position: fixed; inset: 0; background: #030712; z-index: 9998; align-items: center; justify-content: center; text-align: center; padding: 20px;">
-        <div class="boot-card">
-            <div class="boot-title">Vector_smasher Bot Engine</div>
-            <div class="boot-subtitle">Initializing D-Bot Sequence</div>
-            <div class="boot-dots">
-                <div class="boot-dot"></div>
-                <div class="boot-dot"></div>
-                <div class="boot-dot"></div>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar2"></div>
-            </div>
-            <div class="boot-status" id="bootStatusText2">Initializing D-Bot 0%...</div>
+    <!-- ASSET SELECTOR MODAL (Vol 10 to 100) -->
+    <div id="assetModal" onclick="toggleAssetModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div style="font-weight:bold; color:var(--accent-blue); margin-bottom:12px; font-size:13px;">Select Synthetic Index</div>
+            <div class="modal-item" onclick="selectAsset('Volatility 10 (1s) Index', 'R_10', '4889.57')"><span>Volatility 10 (1s) Index</span> <span style="color:#22c55e;">▲ Live</span></div>
+            <div class="modal-item" onclick="selectAsset('Volatility 25 Index', 'R_25', '2821.10')"><span>Volatility 25 Index</span> <span style="color:#22c55e;">▲ Live</span></div>
+            <div class="modal-item" onclick="selectAsset('Volatility 50 Index', 'R_50', '85.14')"><span>Volatility 50 Index</span> <span style="color:#22c55e;">▲ Live</span></div>
+            <div class="modal-item" onclick="selectAsset('Volatility 75 Index', 'R_75', '4889.61')"><span>Volatility 75 Index</span> <span style="color:#22c55e;">▲ Live</span></div>
+            <div class="modal-item" onclick="selectAsset('Volatility 100 (1s) Index', 'R_100', '1014.03')"><span>Volatility 100 (1s) Index</span> <span style="color:#22c55e;">▲ Live</span></div>
         </div>
     </div>
 
@@ -188,441 +129,152 @@
     <div id="sideMenu" onclick="toggleMenu()">
         <div class="menu-content" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <span style="font-weight:bold; color:var(--accent-blue);">Menu Options</span>
+                <span style="font-weight:bold; color:var(--accent-blue);">Vector_smasher Menu</span>
                 <span onclick="toggleMenu()" style="cursor:pointer; font-size:16px;">✕</span>
             </div>
-            <div class="menu-item">
-                <span>Theme Mode</span>
-                <button onclick="toggleTheme()" id="themeToggleBtn" style="background:none; border:none; cursor:pointer; font-size:16px;">🌙</button>
-            </div>
-            <div class="menu-item" onclick="switchTab('dashboard')">🏠 Dashboard</div>
-            <div class="menu-item" onclick="switchTab('botbuilder')">⚙️ Bot Builder</div>
-            <div class="menu-item" onclick="switchTab('freebots')">📂 Free Bots</div>
-            <div class="menu-item" onclick="switchTab('premium')">👑 Premium AI Bots</div>
-            <div class="menu-item" onclick="switchTab('signal')">📡 Signal AI</div>
-            <div class="menu-item" onclick="switchTab('manual')">👆 Manual Trader & Digits</div>
-            <div class="menu-item" onclick="switchTab('bulk')">📦 Bulk Trader</div>
-            <div class="menu-item" onclick="switchTab('copy')">👥 Copy Trader</div>
-            <div class="menu-item" onclick="switchTab('automated')">🤖 Automated</div>
-            <div class="menu-item" onclick="switchTab('speedbot')">🚀 Speedbot</div>
-            <div class="menu-item" onclick="switchTab('chat')">💬 Chat & Analysis</div>
+            <div class="menu-item" onclick="triggerDtraderLoader('Dashboard'); toggleMenu();">🏠 Dashboard</div>
+            <div class="menu-item" onclick="triggerDtraderLoader('Bot Builder'); toggleMenu();">⚙️ Bot Builder</div>
+            <div class="menu-item" onclick="triggerDtraderLoader('Signal AI'); toggleMenu();">📡 Signal AI</div>
+            <div class="menu-item" onclick="triggerDtraderLoader('Manual Trader'); toggleMenu();">📺 Manual Trader</div>
+            <div class="menu-item" onclick="triggerDtraderLoader('Free Bots'); toggleMenu();">📂 Free Bots</div>
+            <div class="menu-item" onclick="triggerDtraderLoader('Premium AI'); toggleMenu();">👑 Premium AI Bots</div>
         </div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
     <div class="app-container" id="mainApp">
-
-        <!-- WELCOME SCREEN -->
-        <div id="welcomeScreen">
-            <div class="welcome-header">
-                <div class="brand-box">
-                    vectorsmasher
-                    <span class="brand-sub">powered by deriv</span>
-                </div>
-                <div class="welcome-auth-btns">
-                    <button onclick="enterDashboard()" class="auth-input-btn dark" style="padding: 6px 12px; margin:0;">Log In</button>
-                    <button onclick="enterDashboard()" class="auth-input-btn" style="padding: 6px 12px; margin:0;">Get Started</button>
-                </div>
-            </div>
-
-            <div class="hero-welcome-title">Welcome to vectorsmasher</div>
-            <div class="hero-welcome-desc">
-                Deriv market guidance, bots, and trading tools. Build, load, and run Deriv bot strategies from a focused workspace made for everyday traders.
-            </div>
-
-            <div class="auth-box-card">
-                <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv&redirect_uri=https://tradinghubzone.github.io/vectorsmasher/" class="auth-input-btn">
-                    Log In and Trade
-                </a>
-                <a href="https://track.deriv.com/_b2wW7x3q2b3w8r1v2v2v2v2v2v2v2v2v/1/" target="_blank" class="auth-input-btn dark">
-                    Create Free Account
-                </a>
-            </div>
-
-            <!-- EVERYTHING IN ONE WORKSPACE - FREE TO USE -->
-            <div style="margin-top: 15px;">
-                <div style="font-size: 11px; font-weight: bold; color: var(--text-muted); text-align: center; margin-bottom: 8px; letter-spacing: 0.5px;">WORKSPACE HIGHLIGHTS</div>
-                <div class="boxed-feature">EVERYTHING IN ONE WORKSPACE — FREE TO USE</div>
-                
-                <div class="feature-box-grid">
-                    <div class="boxed-feature">📂 FREE BOT LIBRARY</div>
-                    <div class="boxed-feature">🧠 SMART AI RECOVERY</div>
-                    <div class="boxed-feature">📈 MARKET ANALYSIS</div>
-                    <div class="boxed-feature">⚡ SPEEDBOT EXECUTION</div>
-                </div>
-            </div>
+        <!-- Top Utility Bar -->
+        <div class="top-utility-bar">
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <div class="user-avatar">MG</div>
+            <button class="switch-btn" onclick="toggleAccountType()">
+                <span id="accountTypeTxt">D ⇄ R</span>
+            </button>
+            <div class="balance-chip" id="topBalance">3,020.41 USD</div>
         </div>
 
-        <!-- DASHBOARD & WORKSPACE SCREEN -->
-        <div id="dashboardWorkspace" style="display: none;">
+        <!-- Navigation Bar -->
+        <div class="feature-nav-bar">
+            <div class="feature-tab active" onclick="triggerDtraderLoader('Dashboard')">Dashboard</div>
+            <div class="feature-tab" onclick="triggerDtraderLoader('Bot Builder')">Bot Builder</div>
+            <div class="feature-tab" onclick="triggerDtraderLoader('Free Bots')">Free</div>
+            <div class="feature-tab" onclick="triggerDtraderLoader('Manual Trader')">Manual Trader</div>
+            <div class="feature-tab" onclick="triggerDtraderLoader('Signal AI')">Signal AI</div>
+        </div>
+
+        <!-- WORKSPACE PANE -->
+        <div class="workspace-pane active">
             
-            <!-- Top Utility Bar -->
-            <div class="top-utility-bar">
-                <button class="menu-btn" onclick="toggleMenu()">☰</button>
-                <button class="switch-btn" onclick="toggleAccountType()">
-                    <span id="accountTypeTxt">D ⇄ R</span>
-                </button>
-                <div class="balance-chip" id="topBalance" onclick="toggleCurrencyUnit()">3,020.41 USD</div>
+            <!-- Volatility Asset Selector Box -->
+            <div class="asset-selector-box" onclick="toggleAssetModal()">
+                <div>
+                    <div class="asset-title" id="selectedAssetTitle">Volatility 100 (1s) Index</div>
+                    <div class="asset-sub" id="assetSubInfo">1014.03 - 0.13 (0.01%) ▲</div>
+                </div>
+                <div style="font-size: 16px; color: var(--text-muted);">⌄</div>
             </div>
 
-            <!-- Advanced Feature Navigation Bar -->
-            <div class="feature-nav-bar">
-                <div class="feature-tab active" id="ftab_dashboard" onclick="switchTab('dashboard')">Dashboard</div>
-                <div class="feature-tab" id="ftab_botbuilder" onclick="switchTab('botbuilder')">Bot Builder</div>
-                <div class="feature-tab" id="ftab_freebots" onclick="switchTab('freebots')">Free Bots</div>
-                <div class="feature-tab" id="ftab_premium" onclick="switchTab('premium')">Premium AI</div>
-                <div class="feature-tab" id="ftab_signal" onclick="switchTab('signal')">Signal AI</div>
-                <div class="feature-tab" id="ftab_manual" onclick="switchTab('manual')">Manual Trader</div>
-                <div class="feature-tab" id="ftab_bulk" onclick="switchTab('bulk')">Bulk Trader</div>
-                <div class="feature-tab" id="ftab_copy" onclick="switchTab('copy')">Copy Trade</div>
-                <div class="feature-tab" id="ftab_automated" onclick="switchTab('automated')">Automated</div>
-                <div class="feature-tab" id="ftab_speedbot" onclick="switchTab('speedbot')">Speed Bot</div>
-                <div class="feature-tab" id="ftab_chat" onclick="switchTab('chat')">Chat</div>
+            <!-- Live Chart Display -->
+            <div class="chart-box">
+                <div class="live-price-tag" id="livePriceDisplay">1014.03</div>
+                <canvas id="simpleChart" width="440" height="160" style="width:100%; height:100%;"></canvas>
             </div>
 
-            <!-- Market Ticker Scroller Bar (Vol 10, Vol 25, Vol 50, Vol 75, Vol 100) -->
-            <div class="ticker-scroller">
-                <div class="ticker-chip" onclick="selectMarket('VOL 10', '4889.57')">VOL 10 <span id="p_10">4889.57</span></div>
-                <div class="ticker-chip" onclick="selectMarket('VOL 25', '2821.10')">VOL 25 <span id="p_25">2821.10</span></div>
-                <div class="ticker-chip" onclick="selectMarket('VOL 50', '85.14')">VOL 50 <span id="p_50">85.14</span></div>
-                <div class="ticker-chip active" onclick="selectMarket('VOL 75', '4889.61')">VOL 75 <span id="p_75">4889.61</span></div>
-                <div class="ticker-chip" onclick="selectMarket('VOL 100', '1267.70')">VOL 100 <span id="p_100">1267.70</span></div>
+            <!-- Accumulators & Trade Type Dropdown -->
+            <div class="trade-type-box" onclick="alert('Trade Type Options: Accumulators, Rise/Fall, Digits')">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="font-size: 14px;">📈</div>
+                    <div>
+                        <div style="font-size: 12px; font-weight: bold; color: #fff;">Accumulators</div>
+                        <div style="font-size: 9px; color: var(--text-muted);">Growth rate: 3%</div>
+                    </div>
+                </div>
+                <div style="font-size: 14px; color: var(--accent-blue);">›</div>
             </div>
 
-            <!-- PANE 1: MAIN DASHBOARD -->
-            <div id="pane_dashboard" class="workspace-pane active">
-                <div class="hero-banner">
-                    <div class="section-label" style="margin-bottom: 2px;">YOUR TRADING WORKSPACE</div>
-                    <div class="hero-title" id="greetingTitle">Good afternoon, trader.</div>
-                    <div class="hero-quote">"Plan your trade, then trade your plan."</div>
-                    <div class="hero-meta">
-                        <div><span class="live-dot">●</span> Markets Live (<span id="activeMarketLbl">VOL 75</span>)</div>
-                        <div id="liveClock">02:51 PM</div>
-                    </div>
+            <!-- Stake Panel -->
+            <div class="stake-panel">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+                    <span>Stake Amount</span>
+                    <span>Max Stake: 1000.00</span>
                 </div>
-
-                <div class="section-label">QUICK ACTIONS</div>
-
-                <div class="action-card" onclick="switchTab('botbuilder')">
-                    <div class="card-left">
-                        <div class="card-icon">📁</div>
-                        <div>
-                            <div class="card-title">Load Bot</div>
-                            <div class="card-desc">Open your trading strategy configuration</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="card-number">01</span>
-                        <div class="card-arrow">›</div>
-                    </div>
+                <div class="stake-row">
+                    <button class="stake-btn" onclick="adjustStake(-100)">−</button>
+                    <input type="number" id="stakeInput" class="stake-input" value="2000" oninput="checkStakeLimit()">
+                    <button class="stake-btn" onclick="adjustStake(100)">+</button>
                 </div>
-
-                <div class="action-card" onclick="switchTab('premium')">
-                    <div class="card-left">
-                        <div class="card-icon" style="background: rgba(234, 179, 8, 0.1); color: #eab308;">👑</div>
-                        <div>
-                            <div class="card-title">Premium Bots <span style="font-size:9px; color:#eab308;">★ Pro</span></div>
-                            <div class="card-desc">Exclusive automated strategies</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="card-number">02</span>
-                        <div class="card-arrow">›</div>
-                    </div>
-                </div>
-
-                <div class="action-card" onclick="switchTab('speedbot')">
-                    <div class="card-left">
-                        <div class="card-icon" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue);">🚀</div>
-                        <div>
-                            <div class="card-title">Speed Bot</div>
-                            <div class="card-desc">One-click automated trading</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="card-number">03</span>
-                        <div class="card-arrow">›</div>
-                    </div>
-                </div>
-
-                <div class="action-card" onclick="switchTab('manual')">
-                    <div class="card-left">
-                        <div class="card-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;">👆</div>
-                        <div>
-                            <div class="card-title">Manual Trading <span class="badge-tag">Popular ★</span></div>
-                            <div class="card-desc">Full control, trade your way</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="card-number">04</span>
-                        <div class="card-arrow">›</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANE 2: MANUAL TRADER & DIGIT PREDICTION (0 TO 9) -->
-            <div id="pane_manual" class="workspace-pane">
-                <div class="section-label">Manual & Digit Over/Under Terminal (0 to 9)</div>
-                <div class="panel-box">
-                    <div style="font-size: 11px; color: var(--accent-blue); margin-bottom: 4px;" id="manualAssetTitle">Active Asset: VOL 75</div>
-                    <div style="font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 10px;" id="manualPriceDisplay">4889.61</div>
-                    
-                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Select Digit Prediction Barrier (0-9) with Deriv Probability Cursor:</div>
-                    
-                    <!-- 0 to 9 Digit Grid with Deriv Percentages -->
-                    <div class="digit-grid" id="digitGrid">
-                        <div class="digit-btn" onclick="selectDigit(0, this)">0 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(1, this)">1 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(2, this)">2 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(3, this)">3 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(4, this)">4 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn selected" onclick="selectDigit(5, this)" id="defaultDigit">5 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(6, this)">6 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(7, this)">7 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(8, this)">8 <span class="digit-pct">10%</span></div>
-                        <div class="digit-btn" onclick="selectDigit(9, this)">9 <span class="digit-pct">10%</span></div>
-                    </div>
-
-                    <div style="font-size: 11px; color: #fff; margin: 10px 0; text-align: center;">
-                        Selected Cursor Barrier: <span id="selectedDigitLbl" style="color: var(--accent-blue); font-weight: bold;">5</span> ($10 Stake)
-                    </div>
-
-                    <div class="trade-row">
-                        <button class="action-btn btn-rise" onclick="executeManualTrade('DIGITOVER')">DIGIT OVER 🟢</button>
-                        <button class="action-btn btn-fall" onclick="executeManualTrade('DIGITUNDER')">DIGIT UNDER 🔴</button>
-                    </div>
-
-                    <div class="trade-row" style="margin-top: 8px;">
-                        <button class="action-btn btn-rise" onclick="executeManualTrade('CALL')">BUY RISE 📈</button>
-                        <button class="action-btn btn-fall" onclick="executeManualTrade('PUT')">BUY FALL 📉</button>
-                    </div>
-                    <div id="tradeStatusMsg" style="font-size: 10px; color: var(--accent-blue); margin-top: 8px; text-align: center;"></div>
-                </div>
-            </div>
-
-            <!-- PANE 3: BOT BUILDER -->
-            <div id="pane_botbuilder" class="workspace-pane">
-                <div class="section-label">Bot Builder Workspace</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Visual Strategy Builder</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Drag-and-drop blocks to build custom automated D-Bot logic easily.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Bot Builder initialized successfully!')">LAUNCH BUILDER ⚙️</button>
-                </div>
-            </div>
-
-            <!-- PANE 4: FREE BOTS -->
-            <div id="pane_freebots" class="workspace-pane">
-                <div class="section-label">Free Bot Library</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Vector Momentum V1</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Proven automated strategy loaded with zero coding required.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Free bot loaded to execution engine!')">LOAD STRATEGY 📂</button>
-                </div>
-            </div>
-
-            <!-- PANE 5: PREMIUM AI -->
-            <div id="pane_premium" class="workspace-pane">
-                <div class="section-label">Premium AI Strategy Engine</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #eab308; margin-bottom: 6px;">👑 Pro AI High-Win Suite</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Advanced neural algorithms with automated Martingale recovery.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Premium AI strategies unlocked!')">ACTIVATE PRO AI 🚀</button>
-                </div>
-            </div>
-
-            <!-- PANE 6: SIGNAL AI -->
-            <div id="pane_signal" class="workspace-pane">
-                <div class="section-label">Signal AI & Robot Scanner</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: var(--accent-blue); margin-bottom: 6px;">📡 Vector AI Robot Scanner</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Autonomous tick scanning and live signal alerts.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Signal AI scanner active!')">START SIGNAL SCANNER 🤖</button>
-                </div>
-            </div>
-
-            <!-- PANE 7: BULK TRADER -->
-            <div id="pane_bulk" class="workspace-pane">
-                <div class="section-label">Bulk Trader Terminal</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Multi-Asset Execution</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Execute trades across multiple volatility indices simultaneously.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Bulk execution ready!')">START BULK TRADER 📦</button>
-                </div>
-            </div>
-
-            <!-- PANE 8: COPY TRADE -->
-            <div id="pane_copy" class="workspace-pane">
-                <div class="section-label">Copy Trading Hub</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Master Trader Copier</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Mirror live professional trading signals instantly.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Copy trader connected!')">CONNECT COPIER 👥</button>
-                </div>
-            </div>
-
-            <!-- PANE 9: AUTOMATED -->
-            <div id="pane_automated" class="workspace-pane">
-                <div class="section-label">Automated Trading Engine</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">D-Bot Automated Execution</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Run fully autonomous XML or custom strategy files.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Automated engine running!')">START AUTOMATED 🤖</button>
-                </div>
-            </div>
-
-            <!-- PANE 10: SPEED BOT -->
-            <div id="pane_speedbot" class="workspace-pane">
-                <div class="section-label">Speed Bot One-Click Terminal</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Ultra-Fast Execution Engine</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">React to market triggers instantly with zero delay.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Speedbot engaged!')">ENGAGE SPEEDBOT ⚡</button>
-                </div>
-            </div>
-
-            <!-- PANE 11: CHAT -->
-            <div id="pane_chat" class="workspace-pane">
-                <div class="section-label">Trader Chat & Market Analysis</div>
-                <div class="panel-box">
-                    <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Global Community Chat</div>
-                    <p style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">Discuss signals, strategies, and market analysis with other traders.</p>
-                    <button class="action-btn btn-bot" onclick="alert('Connected to chat community!')">JOIN CHAT ROOM 💬</button>
+                
+                <!-- Maximum Stake Error Banner (As seen in screenshot) -->
+                <div class="error-banner" id="errorBanner">
+                    Maximum stake allowed is 1000.00.
                 </div>
             </div>
 
         </div>
-
     </div>
 
     <!-- Animated Blue AI Floating Button -->
-    <div class="ai-floating-btn" onclick="switchTab('signal')" title="Vector AI Robot">AI</div>
+    <div class="ai-floating-btn" onclick="triggerDtraderLoader('Signal AI')" title="Vector AI Robot">AI</div>
 
     <script>
-        // BOOT SEQUENCE LOADERS
+        // INSTANT DTRADER LOADING SIMULATION WHEN TAPPING BUTTONS
         window.onload = function() {
-            let p1 = 0;
-            const bar1 = document.getElementById('progressBar1');
-            const status1 = document.getElementById('bootStatusText1');
-
-            const timer1 = setInterval(() => {
-                p1 += 12;
-                if(p1 > 100) p1 = 100;
-                bar1.style.width = p1 + '%';
-                status1.innerText = `Please wait while we connect to server... (${p1}%)`;
-
-                if(p1 === 100) {
-                    clearInterval(timer1);
-                    setTimeout(() => {
-                        document.getElementById('bootLoader').style.display = 'none';
-                        startDbotLoader();
-                    }, 300);
-                }
-            }, 100);
+            setTimeout(() => {
+                document.getElementById('dtraderLoader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('dtraderLoader').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    drawChart();
+                }, 400);
+            }, 1000);
         };
 
-        function startDbotLoader() {
-            const dbotDiv = document.getElementById('dbotLoader');
-            dbotDiv.style.display = 'flex';
-            let p2 = 0;
-            const bar2 = document.getElementById('progressBar2');
-            const status2 = document.getElementById('bootStatusText2');
-
-            const timer2 = setInterval(() => {
-                p2 += 15;
-                if(p2 > 100) p2 = 100;
-                bar2.style.width = p2 + '%';
-                status2.innerText = `Initializing D-Bot ${p2}%...`;
-
-                if(p2 === 100) {
-                    clearInterval(timer2);
-                    setTimeout(() => {
-                        dbotDiv.style.display = 'none';
-                        document.getElementById('mainApp').style.display = 'block';
-                        setDynamicGreeting();
-                        updateLiveClock();
-                    }, 300);
-                }
-            }, 80);
+        function triggerDtraderLoader(featureName) {
+            let loader = document.getElementById('dtraderLoader');
+            loader.style.display = 'flex';
+            loader.style.opacity = '1';
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 300);
+            }, 800);
         }
 
-        // Time-aware greeting
-        function setDynamicGreeting() {
-            const hour = new Date().getHours();
-            let greet = "Good afternoon, trader.";
-            if (hour < 12) greet = "Good morning, trader.";
-            else if (hour >= 18) greet = "Good evening, trader.";
-            document.getElementById('greetingTitle').innerText = greet;
-        }
-
-        function updateLiveClock() {
-            setInterval(() => {
-                const now = new Date();
-                let hours = now.getHours();
-                let minutes = now.getMinutes();
-                let ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12;
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                document.getElementById('liveClock').innerText = `${hours}:${minutes} ${ampm}`;
-            }, 1000);
-        }
-
-        // Navigation & Menu Controls
         function toggleMenu() {
             let menu = document.getElementById('sideMenu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        function enterDashboard() {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('dashboardWorkspace').style.display = 'block';
+        function toggleAssetModal() {
+            let modal = document.getElementById('assetModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.workspace-pane').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.feature-tab').forEach(el => el.classList.remove('active'));
-
-            if(document.getElementById('pane_' + tabId)) {
-                document.getElementById('pane_' + tabId).classList.add('active');
-            }
-            if(document.getElementById('ftab_' + tabId)) {
-                document.getElementById('ftab_' + tabId).classList.add('active');
-            }
-            let menu = document.getElementById('sideMenu');
-            if(menu) menu.style.display = 'none';
-            enterDashboard();
+        function selectAsset(name, symbol, price) {
+            document.getElementById('selectedAssetTitle').innerText = name;
+            document.getElementById('livePriceDisplay').innerText = price;
+            toggleAssetModal();
         }
 
-        // Market & Asset Selector
-        function selectMarket(marketName, priceVal) {
-            document.querySelectorAll('.ticker-chip').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('activeMarketLbl').innerText = marketName;
-            document.getElementById(' manualAssetTitle') ? document.getElementById('manualAssetTitle').innerText = "Active Asset: " + marketName : null;
-            document.getElementById('manualPriceDisplay').innerText = priceVal;
+        function adjustStake(amount) {
+            let input = document.getElementById('stakeInput');
+            let val = parseInt(input.value) + amount;
+            if(val < 10) val = 10;
+            input.value = val;
+            checkStakeLimit();
         }
 
-        // Digit Selection (0 to 9) with Moving Cursor & Deriv Percentages
-        let selectedDigit = 5;
-        function selectDigit(digit, element) {
-            selectedDigit = digit;
-            document.querySelectorAll('.digit-btn').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-            document.getElementById('selectedDigitLbl').innerText = digit;
-        }
-
-        // Theme Toggle (Dark with Moon 🌙 / Day with Sun 🌞)
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            let btn = document.getElementById('themeToggleBtn');
-            if(document.body.classList.contains('light-theme')) {
-                btn.innerText = "🌞";
+        function checkStakeLimit() {
+            let val = parseFloat(document.getElementById('stakeInput').value);
+            let banner = document.getElementById('errorBanner');
+            if(val > 1000) {
+                banner.style.display = 'block';
             } else {
-                btn.innerText = "🌙";
+                banner.style.display = 'none';
             }
         }
 
-        // Demo / Real Account Shift Button (D ⇄ R)
         let isReal = false;
         function toggleAccountType() {
             isReal = !isReal;
@@ -637,25 +289,21 @@
             }
         }
 
-        // Currency Toggle (USD ⇄ KES)
-        let isKes = false;
-        function toggleCurrencyUnit() {
-            isKes = !isKes;
-            let bal = document.getElementById('topBalance');
-            if(isKes) {
-                bal.innerText = "392,653.30 KES";
-            } else {
-                bal.innerText = "3,020.41 USD";
-            }
-        }
-
-        // Manual & Digit Trade Simulation Handler
-        function executeManualTrade(type) {
-            let msg = document.getElementById('tradeStatusMsg');
-            msg.innerText = `Executing ${type} with barrier ${selectedDigit}... Please wait.`;
-            setTimeout(() => {
-                msg.innerText = `Success! ${type} contract executed successfully for barrier ${selectedDigit}.`;
-            }, 1000);
+        // Draw simple live price chart
+        function drawChart() {
+            const canvas = document.getElementById('simpleChart');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, 120);
+            ctx.lineTo(80, 90);
+            ctx.lineTo(160, 140);
+            ctx.lineTo(240, 40);
+            ctx.lineTo(320, 100);
+            ctx.lineTo(440, 70);
+            ctx.stroke();
         }
     </script>
 </body>
