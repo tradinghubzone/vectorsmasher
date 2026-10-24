@@ -14,7 +14,7 @@
         .connection-status { font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
         .connection-status.connected { background: rgba(34, 197, 94, 0.15); color: #22c55e; border-color: #22c55e; }
 
-        /* Loader Screen Overlay */
+        /* Loader Screen */
         #loaderScreen { background: #0d1322; padding: 30px; text-align: center; border-radius: 12px; margin-bottom: 10px; }
         .spinner { width: 36px; height: 36px; border: 3px solid #1e293b; border-top: 3px solid #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -27,21 +27,17 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Ticker & Chart Section */
         .ticker-section { background: #161e31; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #283548; }
         .price-display { font-size: 22px; font-weight: bold; color: #fff; margin-bottom: 2px; }
-        .price-change { font-size: 10px; color: #22c55e; }
         
         .chart-box { width: 100%; height: 200px; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #283548; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Account & Controls Box */
         .panel-box { background: #161e31; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #283548; }
         .section-title { font-size: 11px; color: #94a3b8; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; }
         
         .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-align: center; }
         
-        /* Trade Buttons */
         .trade-row { display: flex; gap: 8px; margin-top: 8px; }
         .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; color: white; }
         .btn-rise { background: #22c55e; }
@@ -54,23 +50,18 @@
 <body>
 
     <div class="terminal">
-        <!-- Header -->
         <div class="header">
             <span class="logo">⚡ Vector_smasher Pro</span>
             <div id="connStatus" class="connection-status">INITIALIZING</div>
         </div>
 
-        <!-- Initial Loader -->
         <div id="loaderScreen">
             <div class="spinner"></div>
-            <div style="font-size: 12px; font-weight: bold; color: #fff;">Loading Deriv Main Workspace...</div>
-            <div style="font-size: 10px; color: #64748b; margin-top: 4px;">Connecting API & Initializing Modules</div>
+            <div style="font-size: 12px; font-weight: bold; color: #fff;">Loading Terminal Workspace...</div>
         </div>
 
-        <!-- Main Workspace Container (Hidden until loaded) -->
         <div id="workspaceContainer" style="display: none;">
             
-            <!-- Navigation Switcher -->
             <div class="nav-tabs">
                 <button class="tab-btn active" onclick="switchTab('manual')">Manual Terminal</button>
                 <button class="tab-btn" onclick="switchTab('bots')">Free Bot Engine</button>
@@ -85,23 +76,25 @@
                         <span style="color: #22c55e;">● LIVE FEED</span>
                     </div>
                     <div class="price-display" id="livePrice">---.--</div>
-                    <div class="price-change" id="priceDirection">Syncing market ticks...</div>
+                    <div class="price-change" id="priceDirection" style="font-size: 10px; color: #22c55e;">Syncing market ticks...</div>
                 </div>
 
                 <div class="panel-box">
                     <div class="section-title">Client Account Session</div>
                     <div id="authArea">
+                        <!-- Direct OAuth Link -->
                         <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv" class="login-btn">
                             Log in with Deriv 🔐
                         </a>
                     </div>
                     <div id="tradingControls" style="display: none;">
-                        <div style="font-size: 12px; font-weight: bold; color: #38bdf8; margin-bottom: 6px;" id="accountInfo">Account: Connected</div>
-                        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">Contract: 5 Ticks Rise/Fall (Stake: $10)</div>
+                        <div style="font-size: 12px; font-weight: bold; color: #38bdf8; margin-bottom: 6px;" id="accountInfo">Account Connected</div>
+                        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">Contract: 5 Ticks Rise/Fall ($10 Stake)</div>
                         <div class="trade-row">
                             <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
                             <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
                         </div>
+                        <button onclick="logoutSession()" style="margin-top:10px; background:none; border:none; color:#ef4444; font-size:10px; cursor:pointer; width:100%; text-align:center;">Disconnect Session</button>
                     </div>
                     <div id="tradeMessage" class="status-text"></div>
                 </div>
@@ -112,24 +105,21 @@
                 <div class="panel-box">
                     <div class="section-title">Automated Free Bot Scanner</div>
                     <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">
-                        Our built-in algorithmic engine automatically evaluates market momentum and triggers smart entries.
+                        Algorithmic momentum scanner designed to find entries automatically.
                     </p>
                     <div style="background: #090d16; padding: 10px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; border: 1px solid #1e293b;">
                         <div>Bot Status: <span id="botState" style="color: #ef4444;">IDLE / STOPPED</span></div>
-                        <div>Signal Target: <span style="color: #38bdf8;">Volatility 75 Index</span></div>
                     </div>
                     <button class="action-btn btn-bot" onclick="toggleBot()" id="botToggleBtn">START FREE BOT 🚀</button>
-                    <div id="botLog" class="status-text" style="margin-top: 8px;">Waiting for user session activation...</div>
+                    <div id="botLog" class="status-text" style="margin-top: 8px;">Awaiting active session...</div>
                 </div>
             </div>
 
-            <!-- TAB 3: LIVE TRADINGVIEW CHARTS -->
+            <!-- TAB 3: CHARTS -->
             <div id="tab-charts" class="tab-content">
                 <div class="chart-box">
-                    <!-- Embedded TradingView Advanced Realtime Widget for V75 -->
                     <iframe src="https://s.tradingview.com/widgetembed/?symbol=DERIV:R_75&interval=1&theme=dark&style=1&timezone=Etc%2FUTC"></iframe>
                 </div>
-                <div style="font-size: 10px; color: #64748b; text-align: center;">Advanced Technical Frame Loaded Successfully</div>
             </div>
 
         </div>
@@ -140,15 +130,48 @@
         let lastPrice = 0;
         let userToken = "";
         let botActive = false;
-        let botInterval;
 
-        // Initialize full app loader sequence
+        // 1. Instantly check URL hash or query parameters for Deriv login tokens
+        function checkOAuthTokens() {
+            const hash = window.location.hash.substring(1);
+            const hashParams = new URLSearchParams(hash);
+            const queryParams = new URLSearchParams(window.location.search);
+
+            // Deriv returns tokens like token1=xxxx&acct1=CR12345
+            for (let [key, value] of hashParams.entries()) {
+                if (key.startsWith('token')) {
+                    userToken = value;
+                    localStorage.setItem('deriv_token', userToken);
+                }
+            }
+            for (let [key, value] of queryParams.entries()) {
+                if (key.startsWith('token')) {
+                    userToken = value;
+                    localStorage.setItem('deriv_token', userToken);
+                }
+            }
+
+            // Fallback to saved local storage token if available
+            if (!userToken) {
+                userToken = localStorage.getItem('deriv_token');
+            }
+        }
+
+        checkOAuthTokens();
+
         window.onload = function() {
             setTimeout(() => {
                 document.getElementById('loaderScreen').style.display = 'none';
                 document.getElementById('workspaceContainer').style.display = 'block';
+                
+                // If token exists, show trading controls immediately
+                if (userToken) {
+                    document.getElementById('authArea').style.display = 'none';
+                    document.getElementById('tradingControls').style.display = 'block';
+                }
+                
                 connectWebSocket();
-            }, 1200); // Smooth 1.2s initialization loader
+            }, 800);
         };
 
         function switchTab(tabName) {
@@ -167,17 +190,7 @@
             }
         }
 
-        // Handle OAuth Return Tokens
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('token1')) {
-            userToken = urlParams.get('token1');
-            localStorage.setItem('deriv_token', userToken);
-        } else {
-            userToken = localStorage.getItem('deriv_token');
-        }
-
         function connectWebSocket() {
-            // Connected directly using your application ID 34LmtjEQdOd9cQs0Zh1uc
             ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=34LmtjEQdOd9cQs0Zh1uc');
 
             ws.onopen = function() {
@@ -198,6 +211,9 @@
                         document.getElementById('authArea').style.display = 'none';
                         document.getElementById('tradingControls').style.display = 'block';
                         document.getElementById('accountInfo').innerText = `Account: ${data.authorize.loginid} (${data.authorize.currency} ${data.authorize.balance})`;
+                    } else if (data.error) {
+                        // Token invalid/expired
+                        logoutSession();
                     }
                 }
 
@@ -235,7 +251,7 @@
 
         function executeTrade(contractType) {
             if (!userToken) {
-                alert("Please log in with Deriv first to execute trades!");
+                alert("Please log in with Deriv first!");
                 return;
             }
             document.getElementById('tradeMessage').innerText = "Processing order...";
@@ -254,9 +270,15 @@
             }));
         }
 
+        function logoutSession() {
+            localStorage.removeItem('deriv_token');
+            userToken = "";
+            window.location.href = window.location.pathname; // Clean reset
+        }
+
         function toggleBot() {
             if (!userToken) {
-                alert("Please log in with Deriv first to run the Free Bot engine!");
+                alert("Please log in with Deriv first!");
                 return;
             }
             botActive = !botActive;
@@ -268,16 +290,16 @@
                 btn.style.background = "#ef4444";
                 stateLbl.innerText = "ACTIVE / SCANNING";
                 stateLbl.style.color = "#22c55e";
-                document.getElementById('botLog').innerText = "Bot active: Analyzing tick momentum for entry...";
+                document.getElementById('botLog').innerText = "Bot active: Analyzing ticks...";
             } else {
                 btn.innerText = "START FREE BOT";
                 btn.style.background = "#8b5cf6";
                 stateLbl.innerText = "IDLE / STOPPED";
                 stateLbl.style.color = "#ef4444";
-                document.getElementById('botLog').innerText = "Bot paused by user.";
+                document.getElementById('botLog').innerText = "Bot paused.";
             }
         }
     </script>
 </body>
     </html>
-                        
+    
