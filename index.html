@@ -14,40 +14,40 @@
         .connection-status { font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
         .connection-status.connected { background: rgba(34, 197, 94, 0.15); color: #22c55e; border-color: #22c55e; }
 
-        /* Live Ticker Feed Card */
         .ticker-section { background: #161e31; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #283548; }
         .ticker-header { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
         .price-display { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 4px; }
         .price-change { font-size: 11px; color: #22c55e; }
 
-        /* Client Account Status Box */
         .account-box { background: #161e31; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #283548; text-align: center; }
         .account-title { font-size: 12px; color: #94a3b8; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; }
         .account-balance { font-size: 20px; font-weight: bold; color: #38bdf8; margin-bottom: 10px; }
         
-        /* OAuth Login Button */
         .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; text-align: center; transition: background 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
         .login-btn:hover { background: #1d4ed8; }
 
-        /* Direct Affiliate Execution Gateway */
+        /* Trading Execution Panel */
+        .trade-panel { display: none; margin-top: 10px; }
+        .trade-row { display: flex; gap: 10px; margin-top: 10px; }
+        .action-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; }
+        .btn-rise { background: #22c55e; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+        .btn-fall { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+        .action-btn:active { transform: scale(0.98); }
+
         .gateway-box { background: linear-gradient(135deg, #1e1b4b, #0d1322); border: 1px solid #4338ca; border-radius: 12px; padding: 16px; text-align: center; }
         .gateway-box h3 { font-size: 14px; color: #fff; margin-bottom: 4px; }
         .gateway-box p { font-size: 11px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4; }
-        
-        .trade-btn { display: block; background: #ff444f; color: #ffffff; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 15px rgba(255, 68, 79, 0.4); transition: transform 0.1s; }
-        .trade-btn:hover { transform: translateY(-1px); }
+        .trade-btn { display: block; background: #ff444f; color: #ffffff; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 15px rgba(255, 68, 79, 0.4); }
     </style>
 </head>
 <body>
 
     <div class="terminal">
-        <!-- Header -->
         <div class="header">
             <span class="logo">⚡ Vector_smasher</span>
             <div id="connStatus" class="connection-status">CONNECTING...</div>
         </div>
 
-        <!-- Real-Time WebSocket Price Feed -->
         <div class="ticker-section">
             <div class="ticker-header">
                 <span>Volatility 75 Index (Live Feed)</span>
@@ -57,27 +57,35 @@
             <div class="price-change" id="priceDirection">Streaming live market ticks...</div>
         </div>
 
-        <!-- Client Authentication Area -->
+        <!-- Client Authentication & Trading Panel -->
         <div class="account-box" id="authSection">
             <div class="account-title">Workspace Client Portal</div>
             <div id="accountStatusText" style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
-                Connect your account to access live terminal execution.
+                Connect your account to run live terminal trades.
             </div>
             
-            <!-- Deriv OAuth Login with your App ID -->
+            <!-- Login Button -->
             <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv" id="loginLink" class="login-btn">
                 Log in with Deriv 🔐
             </a>
+
+            <!-- Hidden Trading Panel (Appears after successful login) -->
+            <div id="tradePanel" class="trade-panel">
+                <div class="account-balance" id="accountBalanceDisplay">Balance: Loading...</div>
+                <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Execute 5-Tick Contracts (V75)</div>
+                <div class="trade-row">
+                    <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
+                    <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
+                </div>
+                <div id="tradeResult" style="font-size: 11px; margin-top: 8px; color: #38bdf8;"></div>
+            </div>
         </div>
 
-        <!-- Direct Conversion Gateway -->
         <div class="gateway-box">
-            <h3>New to Trading?</h3>
-            <p>Create your verified account and access synthetic indices instantly.</p>
-            
-            <!-- Your Affiliate Tracking Link -->
+            <h3>New Partner Account</h3>
+            <p>Register alternative accounts or share your tracking link.</p>
             <a href="https://t.deriv.link?t=ZKVMXBVCE4P5" target="_blank" class="trade-btn">
-                Create Free Account 🚀
+                Create Account 🚀
             </a>
         </div>
     </div>
@@ -85,23 +93,51 @@
     <script>
         let ws;
         let lastPrice = 0;
+        let userToken = "";
+        let selectedAccount = "";
+
+        // Check if user returned from OAuth login with token parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Deriv OAuth returns tokens like token1, acct1, etc.
+        if (urlParams.has('token1')) {
+            userToken = urlParams.get('token1');
+            selectedAccount = urlParams.get('acct1');
+            localStorage.setItem('deriv_token', userToken);
+            localStorage.setItem('deriv_account', selectedAccount);
+        } else {
+            userToken = localStorage.getItem('deriv_token');
+            selectedAccount = localStorage.getItem('deriv_account');
+        }
 
         function connectWebSocket() {
-            // Public Deriv feed connection
-            ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
+            ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=34LmtjEQdOd9cQs0Zh1uc');
 
             ws.onopen = function() {
                 document.getElementById('connStatus').innerText = "CONNECTED";
                 document.getElementById('connStatus').classList.add('connected');
                 ws.send(JSON.stringify({ ticks: "R_75" }));
+
+                // If user is logged in, authorize session automatically
+                if (userToken) {
+                    ws.send(JSON.stringify({ authorize: userToken }));
+                }
             };
 
             ws.onmessage = function(event) {
                 let data = JSON.parse(event.data);
+                
+                if (data.msg_type === 'authorize') {
+                    if (data.authorize) {
+                        document.getElementById('loginLink').style.display = 'none';
+                        document.getElementById('accountStatusText').style.display = 'none';
+                        document.getElementById('tradePanel').style.display = 'block';
+                        document.getElementById('accountBalanceDisplay').innerText = `${data.authorize.loginid} (${data.authorize.currency} ${data.authorize.balance})`;
+                    }
+                }
+
                 if (data.tick) {
                     let currentPrice = data.tick.quote;
                     let formattedPrice = currentPrice.toFixed(2);
-                    
                     document.getElementById('livePrice').innerText = formattedPrice;
 
                     let dirElement = document.getElementById('priceDirection');
@@ -114,6 +150,14 @@
                     }
                     lastPrice = currentPrice;
                 }
+
+                if (data.msg_type === 'buy') {
+                    if (data.buy) {
+                        document.getElementById('tradeResult').innerText = `Success! Contract ID: ${data.buy.contract_id}`;
+                    } else if (data.error) {
+                        document.getElementById('tradeResult').innerText = `Error: ${data.error.message}`;
+                    }
+                }
             };
 
             ws.onclose = function() {
@@ -123,19 +167,30 @@
             };
         }
 
-        connectWebSocket();
-
-        // Check if user just returned from successful OAuth login
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('acct1')) {
-            let accountId = urlParams.get('acct1');
-            document.getElementById('authSection').innerHTML = `
-                <div class="account-title">Active Session Connected</div>
-                <div class="account-balance">Account: ${accountId}</div>
-                <p style="font-size: 11px; color: #22c55e;">Securely linked to terminal workspace.</p>
-            `;
+        function executeTrade(contractType) {
+            if (!userToken) {
+                alert("Please log in first!");
+                return;
+            }
+            document.getElementById('tradeResult').innerText = "Sending trade order...";
+            ws.send(JSON.stringify({
+                buy: 1,
+                price: 10, // Stake amount in account currency
+                parameters: {
+                    amount: 10,
+                    basis: "stake",
+                    currency: "USD",
+                    duration: 5,
+                    duration_unit: "t",
+                    symbol: "R_75",
+                    contract_type: contractType
+                }
+            }));
         }
+
+        connectWebSocket();
     </script>
 
 </body>
-</html>
+    </html>
+                
