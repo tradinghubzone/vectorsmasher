@@ -9,65 +9,62 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background: #030712; color: #f8fafc; padding: 6px; display: flex; justify-content: center; min-height: 100vh; background-image: radial-gradient(circle at 50% 30%, #0f172a 0%, #030712 70%); }
         
-        /* Fullscreen Professional Startup Loader */
+        /* Startup Loader */
         #startupLoader { position: fixed; inset: 0; background: #030712; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; transition: opacity 0.4s ease; }
         .loader-logo { font-size: 20px; font-weight: bold; color: #38bdf8; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .spinner { width: 42px; height: 42px; border: 3px solid #1e293b; border-top: 3px solid #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loader-status { font-size: 11px; color: #94a3b8; font-weight: 500; letter-spacing: 0.5px; }
+        .loader-status { font-size: 11px; color: #94a3b8; font-weight: 500; }
 
         .terminal { width: 100%; max-width: 480px; background: rgba(13, 19, 34, 0.95); backdrop-filter: blur(12px); border: 1px solid #1e293b; border-radius: 16px; padding: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); display: none; }
         
         /* Top Utility Bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #1e293b; }
-        .user-badge { background: #1e293b; color: #38bdf8; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+        .user-badge { background: #1e293b; color: #38bdf8; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 20px; }
         .balance-display { font-size: 13px; font-weight: bold; color: #22c55e; }
 
         /* Market Ticker Scroller */
         .ticker-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; scrollbar-width: none; }
         .ticker-bar::-webkit-scrollbar { display: none; }
-        .ticker-chip { background: #111827; border: 1px solid #1f2937; padding: 6px 10px; border-radius: 8px; font-size: 10px; color: #94a3b8; white-space: nowrap; flex-shrink: 0; }
+        .ticker-chip { background: #111827; border: 1px solid #1f2937; padding: 6px 10px; border-radius: 8px; font-size: 10px; color: #94a3b8; white-space: nowrap; flex-shrink: 0; cursor: pointer; }
+        .ticker-chip.active { border-color: #38bdf8; background: #1e293b; color: #fff; }
         .ticker-chip span { color: #fff; font-weight: bold; margin-left: 4px; }
 
         /* Navigation Tabs */
         .nav-tabs { display: flex; gap: 6px; margin-bottom: 12px; background: #0b1120; padding: 4px; border-radius: 12px; border: 1px solid #1e293b; }
-        .tab-btn { flex: 1; padding: 8px 4px; border: none; background: transparent; color: #94a3b8; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .tab-btn { flex: 1; padding: 8px 4px; border: none; background: transparent; color: #94a3b8; font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; }
         .tab-btn.active { background: #1e293b; color: #38bdf8; border: 1px solid #334155; }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Quick Action Cards */
-        .section-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .action-card { background: linear-gradient(135deg, #111827 0%, #0f172a 100%); border: 1px solid #1f2937; border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; position: relative; }
-        .action-card:active { transform: scale(0.98); background: #1e293b; }
-        .action-card.premium { border-color: #eab308; }
+        /* Panels & Cards */
+        .panel-box { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .section-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 8px; }
         
-        .card-left { display: flex; align-items: center; gap: 10px; }
-        .card-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .card-title { font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 2px; }
-        .card-desc { font-size: 10px; color: #94a3b8; }
-        .card-arrow { width: 24px; height: 24px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #cbd5e1; }
-        .badge-tag { background: #3b82f6; color: #fff; font-size: 8px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold; }
-
-        /* Panels & Controls */
-        .panel-box { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; margin-top: 6px; }
         .login-btn { display: block; width: 100%; background: #2563eb; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; text-align: center; }
+        
         .trade-row { display: flex; gap: 8px; margin-top: 10px; }
         .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; }
         .btn-rise { background: #22c55e; }
         .btn-fall { background: #ef4444; }
         .btn-bot { background: #8b5cf6; width: 100%; margin-top: 8px; }
 
-        /* Floating AI Orb */
-        .ai-floating-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #3b82f6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); border: 2px solid rgba(255,255,255,0.2); cursor: pointer; z-index: 100; }
+        /* Digit Controls */
+        .digit-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
+        .digit-btn { background: #1e293b; border: 1px solid #334155; color: #fff; padding: 8px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; font-size: 12px; }
+        .digit-btn.selected { background: #38bdf8; color: #030712; border-color: #fff; }
 
         .status-text { font-size: 10px; color: #38bdf8; margin-top: 6px; text-align: center; }
+        
+        .account-type-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; margin-left: 6px; }
+        .type-demo { background: #eab308; color: #000; }
+        .type-real { background: #22c55e; color: #000; }
     </style>
 </head>
 <body>
 
-    <!-- Professional Startup Loader -->
+    <!-- Startup Loader -->
     <div id="startupLoader">
         <div class="loader-logo">⚡ Vector_smasher Pro</div>
         <div class="spinner"></div>
@@ -77,104 +74,105 @@
     <div class="terminal" id="mainTerminal">
         <!-- Top Bar -->
         <div class="top-bar">
-            <div class="user-badge" id="userBadge"><span>⚡</span> VS</div>
+            <div class="user-badge" id="userBadge">⚡ VS Terminal</div>
             <div id="connStatus" style="font-size: 9px; color: #ef4444; font-weight: bold;">● CONNECTING</div>
             <div class="balance-display" id="topBalance">-- USD</div>
         </div>
 
-        <!-- Market Ticker Scroller -->
+        <!-- Market Ticker Scroller (Click to change active asset) -->
         <div class="ticker-bar">
-            <div class="ticker-chip">VOL 10 <span id="p_10">---</span></div>
-            <div class="ticker-chip">VOL 25 <span id="p_25">---</span></div>
-            <div class="ticker-chip">VOL 50 <span id="p_50">---</span></div>
-            <div class="ticker-chip">VOL 75 <span id="p_75">---</span></div>
-            <div class="ticker-chip">VOL 100 <span id="p_100">---</span></div>
+            <div class="ticker-chip" id="chip_R_10" onclick="changeMarket('R_10', 'Volatility 10 Index')">VOL 10 <span id="p_10">---</span></div>
+            <div class="ticker-chip" id="chip_R_25" onclick="changeMarket('R_25', 'Volatility 25 Index')">VOL 25 <span id="p_25">---</span></div>
+            <div class="ticker-chip" id="chip_R_50" onclick="changeMarket('R_50', 'Volatility 50 Index')">VOL 50 <span id="p_50">---</span></div>
+            <div class="ticker-chip active" id="chip_R_75" onclick="changeMarket('R_75', 'Volatility 75 Index')">VOL 75 <span id="p_75">---</span></div>
+            <div class="ticker-chip" id="chip_R_100" onclick="changeMarket('R_100', 'Volatility 100 Index')">VOL 100 <span id="p_100">---</span></div>
         </div>
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="switchTab('dashboard', event)">🏠 Dashboard</button>
-            <button class="tab-btn" onclick="switchTab('builder', event)">⚙️ Bot Builder</button>
-            <button class="tab-btn" onclick="switchTab('ai', event)">🤖 AI Engine</button>
+            <button class="tab-btn" onclick="switchTab('manual', event)">⚡ Manual Pro</button>
+            <button class="tab-btn" onclick="switchTab('digits', event)">🔢 Digit Over/Under</button>
+            <button class="tab-btn" onclick="switchTab('ai', event)">🤖 AI Robot</button>
         </div>
 
-        <!-- TAB 1: DASHBOARD -->
+        <!-- TAB 1: DASHBOARD & LOGIN -->
         <div id="tab-dashboard" class="tab-content active">
-            <div class="section-label">Quick Actions</div>
-            
-            <div class="action-card" onclick="switchTab('builder')">
-                <div class="card-left">
-                    <div class="card-icon">📁</div>
-                    <div>
-                        <div class="card-title">Load Bot</div>
-                        <div class="card-desc">Open your trading strategy configuration</div>
-                    </div>
-                </div>
-                <div class="card-arrow">›</div>
-            </div>
-
-            <div class="action-card premium" onclick="alert('Premium high-win strategies unlocked via active session!')">
-                <div class="card-left">
-                    <div class="card-icon" style="background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.3); color: #eab308;">👑</div>
-                    <div>
-                        <div class="card-title">Premium Bots <span style="font-size:9px; color:#eab308;">★ Pro</span></div>
-                        <div class="card-desc">Exclusive automated high-win strategies</div>
-                    </div>
-                </div>
-                <div class="card-arrow">›</div>
-            </div>
-
-            <div class="action-card" onclick="switchTab('ai')">
-                <div class="card-left">
-                    <div class="card-icon" style="background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); color: #8b5cf6;">🚀</div>
-                    <div>
-                        <div class="card-title">Vector AI Bot</div>
-                        <div class="card-desc">Autonomous intelligent tick scanning</div>
-                    </div>
-                </div>
-                <div class="card-arrow">›</div>
-            </div>
-
-            <div class="action-card" onclick="switchTab('manual')">
-                <div class="card-left">
-                    <div class="card-icon" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e;">👆</div>
-                    <div>
-                        <div class="card-title">Manual Trading <span class="badge-tag">Popular</span></div>
-                        <div class="card-desc">Full terminal control, trade your way</div>
-                    </div>
-                </div>
-                <div class="card-arrow">›</div>
-            </div>
-        </div>
-
-        <!-- TAB 2: BOT BUILDER / MANUAL TERMINAL -->
-        <div id="tab-builder" class="tab-content">
-            <div class="section-label">Initializing Vector Manual & Bot Terminal</div>
+            <div class="section-label">Deriv Session Management</div>
             <div class="panel-box">
-                <div style="font-size: 11px; font-weight: bold; color: #38bdf8; margin-bottom: 4px;">Volatility 75 Index (R_75) Live Feed</div>
-                <div style="font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 8px;" id="mainPriceDisplay">---.--</div>
-                
                 <div id="authArea">
+                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">
+                        Authorize your account to display live balances, toggle seamlessly between <b>Demo</b> and <b>Real</b> accounts, and execute trades.
+                    </p>
                     <a href="https://oauth.deriv.com/oauth2/authorize?app_id=34LmtjEQdOd9cQs0Zh1uc&brand=deriv&redirect_uri=https://tradinghubzone.github.io/vectorsmasher/" class="login-btn">
                         Log in with Deriv 🔐
                     </a>
                 </div>
                 
                 <div id="tradingControls" style="display: none;">
-                    <div style="font-size: 11px; color: #22c55e; margin-bottom: 6px;" id="accountSessionInfo">Session Authorized</div>
-                    <div class="trade-row">
-                        <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
-                        <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="font-size: 11px; font-weight: bold; color: #38bdf8;" id="accountSessionInfo">Connected Account</div>
+                        <span id="accountTypeBadge" class="account-type-badge type-demo">DEMO</span>
                     </div>
-                    <button onclick="logoutSession()" style="margin-top:8px; background:none; border:none; color:#ef4444; font-size:10px; cursor:pointer; width:100%;">Disconnect Session</button>
+                    <div style="font-size: 18px; font-weight: bold; color: #22c55e; margin-bottom: 10px;" id="dashboardBalance">0.00 USD</div>
+                    <button onclick="logoutSession()" style="background:none; border:none; color:#ef4444; font-size:10px; cursor:pointer; width:100%; text-align:center;">Disconnect Session</button>
+                </div>
+            </div>
+
+            <div class="section-label">Active Market Overview</div>
+            <div class="panel-box">
+                <div style="font-size: 11px; font-weight: bold; color: #38bdf8; margin-bottom: 4px;" id="activeMarketTitle">Volatility 75 Index</div>
+                <div style="font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 6px;" id="mainPriceDisplay">---.--</div>
+                <div style="font-size: 10px; color: #22c55e;">● Live Tick Feed Streaming</div>
+            </div>
+        </div>
+
+        <!-- TAB 2: MANUAL HIGH/LOW TRADING -->
+        <div id="tab-manual" class="tab-content">
+            <div class="section-label">Manual Rise / Fall Execution</div>
+            <div class="panel-box">
+                <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;" id="manualAssetLbl">Asset: Volatility 75 Index</div>
+                <div style="font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 10px;" id="manualPriceDisplay">---.--</div>
+                <div style="font-size: 11px; color: #38bdf8; margin-bottom: 8px;">Contract: 5 Ticks ($10 Stake)</div>
+                <div class="trade-row">
+                    <button class="action-btn btn-rise" onclick="executeTrade('CALL')">BUY RISE 📈</button>
+                    <button class="action-btn btn-fall" onclick="executeTrade('PUT')">BUY FALL 📉</button>
                 </div>
                 <div id="tradeMessage" class="status-text"></div>
             </div>
         </div>
 
-        <!-- TAB 3: VECTOR AI ROBOT -->
+        <!-- TAB 3: DIGIT OVER / UNDER TRADING -->
+        <div id="tab-digits" class="tab-content">
+            <div class="section-label">Digit Over / Under Prediction Terminal</div>
+            <div class="panel-box">
+                <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">Select Prediction Digit Barrier:</div>
+                <div class="digit-grid" id="digitGrid">
+                    <div class="digit-btn" onclick="selectDigit(0)">0</div>
+                    <div class="digit-btn" onclick="selectDigit(1)">1</div>
+                    <div class="digit-btn" onclick="selectDigit(2)">2</div>
+                    <div class="digit-btn" onclick="selectDigit(3)">3</div>
+                    <div class="digit-btn" onclick="selectDigit(4)">4</div>
+                    <div class="digit-btn selected" onclick="selectDigit(5)" id="defaultDigit">5</div>
+                    <div class="digit-btn" onclick="selectDigit(6)">6</div>
+                    <div class="digit-btn" onclick="selectDigit(7)">7</div>
+                    <div class="digit-btn" onclick="selectDigit(8)">8</div>
+                    <div class="digit-btn" onclick="selectDigit(9)">9</div>
+                </div>
+                <div style="font-size: 11px; color: #fff; margin: 8px 0; text-align: center;">
+                    Selected Barrier: <span id="selectedDigitLabel" style="color: #38bdf8; font-weight: bold;">5</span> ($10 Stake, 1 Tick)
+                </div>
+                <div class="trade-row">
+                    <button class="action-btn btn-rise" onclick="executeDigitTrade('DIGITOVER')">DIGIT OVER 🟢</button>
+                    <button class="action-btn btn-fall" onclick="executeDigitTrade('DIGITUNDER')">DIGIT UNDER 🔴</button>
+                </div>
+                <div id="digitTradeMessage" class="status-text"></div>
+            </div>
+        </div>
+
+        <!-- TAB 4: AI ROBOT -->
         <div id="tab-ai" class="tab-content">
-            <div class="section-label">Initializing Vector AI Robot Engine</div>
+            <div class="section-label">Vector AI Autonomous Robot</div>
             <div class="panel-box">
                 <div style="font-size: 11px; font-weight: bold; color: #8b5cf6; margin-bottom: 6px;">🤖 Autonomous Neural Scanner</div>
                 <p style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Evaluating live momentum triggers across multi-tick intervals automatically.</p>
@@ -188,35 +186,22 @@
             </div>
         </div>
 
-        <!-- MANUAL TAB VIEW -->
-        <div id="tab-manual" class="tab-content">
-            <div class="section-label">Initializing Vector Manual Execution</div>
-            <div class="panel-box">
-                <div style="font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 6px;">Quick Stake ($10 USD)</div>
-                <div class="trade-row">
-                    <button class="action-btn btn-rise" onclick="executeTrade('CALL')">CALL (RISE)</button>
-                    <button class="action-btn btn-fall" onclick="executeTrade('PUT')">PUT (FALL)</button>
-                </div>
-            </div>
-        </div>
-
     </div>
-
-    <!-- Floating AI Quick Orb -->
-    <div class="ai-floating-btn" onclick="switchTab('ai')" title="Vector AI Bot">AI</div>
 
     <script>
         let ws;
         let userToken = "";
+        let selectedSymbol = "R_75";
+        let selectedSymbolName = "Volatility 75 Index";
+        let selectedPredictionDigit = 5;
         let aiActive = false;
         let aiInterval;
 
-        // Simulate Professional Startup Loading Sequence
+        // Startup Sequence
         window.onload = function() {
             const statusText = document.getElementById('loaderText');
-            
             setTimeout(() => { statusText.innerText = "Connecting to Deriv WebSockets..."; }, 400);
-            setTimeout(() => { statusText.innerText = "Verifying security tokens..."; }, 800);
+            setTimeout(() => { statusText.innerText = "Verifying security session..."; }, 800);
             setTimeout(() => {
                 checkOAuthTokens();
                 document.getElementById('startupLoader').style.opacity = '0';
@@ -258,19 +243,34 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
-            if(tabName === 'dashboard') {
-                document.getElementById('tab-dashboard').classList.add('active');
-            } else if(tabName === 'builder') {
-                document.getElementById('tab-builder').classList.add('active');
-            } else if(tabName === 'ai') {
-                document.getElementById('tab-ai').classList.add('active');
-            } else if(tabName === 'manual') {
-                document.getElementById('tab-manual').classList.add('active');
-            }
+            if(tabName === 'dashboard') document.getElementById('tab-dashboard').classList.add('active');
+            else if(tabName === 'manual') document.getElementById('tab-manual').classList.add('active');
+            else if(tabName === 'digits') document.getElementById('tab-digits').classList.add('active');
+            else if(tabName === 'ai') document.getElementById('tab-ai').classList.add('active');
 
-            if(evt && evt.currentTarget) {
-                evt.currentTarget.classList.add('active');
+            if(evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+        }
+
+        function changeMarket(symbol, name) {
+            selectedSymbol = symbol;
+            selectedSymbolName = name;
+            
+            document.querySelectorAll('.ticker-chip').forEach(el => el.classList.remove('active'));
+            document.getElementById('chip_' + symbol).classList.add('active');
+            
+            document.getElementById('activeMarketTitle').innerText = name;
+            document.getElementById('manualAssetLbl').innerText = `Asset: ${name}`;
+
+            if(ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ ticks: symbol }));
             }
+        }
+
+        function selectDigit(digit) {
+            selectedPredictionDigit = digit;
+            document.querySelectorAll('.digit-btn').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('selectedDigitLabel').innerText = digit;
         }
 
         function connectWebSocket() {
@@ -279,8 +279,9 @@
             ws.onopen = function() {
                 document.getElementById('connStatus').innerText = "● ONLINE";
                 document.getElementById('connStatus').style.color = "#22c55e";
-                document.getElementById('userBadge').innerHTML = "<span>⚡</span> VS PRO";
+                document.getElementById('userBadge').innerText = "⚡ VS PRO";
                 
+                // Subscribe to all volatility indices for the ticker
                 ws.send(JSON.stringify({ ticks: "R_10" }));
                 ws.send(JSON.stringify({ ticks: "R_25" }));
                 ws.send(JSON.stringify({ ticks: "R_50" }));
@@ -298,8 +299,20 @@
                 if (data.msg_type === 'authorize' && data.authorize) {
                     document.getElementById('authArea').style.display = 'none';
                     document.getElementById('tradingControls').style.display = 'block';
-                    document.getElementById('topBalance').innerText = `${data.authorize.balance} ${data.authorize.currency}`;
-                    document.getElementById('accountSessionInfo').innerText = `Connected: ${data.authorize.loginid}`;
+                    
+                    let balanceFormatted = `${data.authorize.balance} ${data.authorize.currency}`;
+                    document.getElementById('topBalance').innerText = balanceFormatted;
+                    document.getElementById('dashboardBalance').innerText = balanceFormatted;
+                    document.getElementById('accountSessionInfo').innerText = `ID: ${data.authorize.loginid}`;
+                    
+                    let badge = document.getElementById('accountTypeBadge');
+                    if(data.authorize.is_virtual) {
+                        badge.innerText = "DEMO";
+                        badge.className = "account-type-badge type-demo";
+                    } else {
+                        badge.innerText = "REAL";
+                        badge.className = "account-type-badge type-real";
+                    }
                 }
 
                 if (data.tick) {
@@ -308,15 +321,18 @@
                     if(sym === 'R_10') document.getElementById('p_10').innerText = val;
                     if(sym === 'R_25') document.getElementById('p_25').innerText = val;
                     if(sym === 'R_50') document.getElementById('p_50').innerText = val;
-                    if(sym === 'R_75') {
-                        document.getElementById('p_75').innerText = val;
-                        document.getElementById('mainPriceDisplay').innerText = val;
-                    }
+                    if(sym === 'R_75') document.getElementById('p_75').innerText = val;
                     if(sym === 'R_100') document.getElementById('p_100').innerText = val;
+
+                    if(sym === selectedSymbol) {
+                        document.getElementById('mainPriceDisplay').innerText = val;
+                        document.getElementById('manualPriceDisplay').innerText = val;
+                    }
                 }
 
                 if (data.msg_type === 'buy' && data.buy) {
-                    document.getElementById('tradeMessage').innerText = `Order Executed! ID: ${data.buy.contract_id}`;
+                    document.getElementById('tradeMessage').innerText = `Executed! ID: ${data.buy.contract_id}`;
+                    document.getElementById('digitTradeMessage').innerText = `Digit Order Executed! ID: ${data.buy.contract_id}`;
                 }
             };
 
@@ -332,7 +348,7 @@
                 alert("Please log in with Deriv first!");
                 return;
             }
-            document.getElementById('tradeMessage').innerText = "Sending order to Deriv...";
+            document.getElementById('tradeMessage').innerText = "Processing order...";
             ws.send(JSON.stringify({
                 buy: 1,
                 price: 10,
@@ -342,15 +358,37 @@
                     currency: "USD",
                     duration: 5,
                     duration_unit: "t",
-                    symbol: "R_75",
+                    symbol: selectedSymbol,
                     contract_type: contractType
+                }
+            }));
+        }
+
+        function executeDigitTrade(contractType) {
+            if (!userToken) {
+                alert("Please log in with Deriv first!");
+                return;
+            }
+            document.getElementById('digitTradeMessage').innerText = "Processing digit contract...";
+            ws.send(JSON.stringify({
+                buy: 1,
+                price: 10,
+                parameters: {
+                    amount: 10,
+                    basis: "stake",
+                    currency: "USD",
+                    duration: 1,
+                    duration_unit: "t",
+                    symbol: selectedSymbol,
+                    contract_type: contractType,
+                    barrier: selectedPredictionDigit.toString()
                 }
             }));
         }
 
         function toggleAIBot() {
             if (!userToken) {
-                alert("Please log in with your Deriv account first to enable the AI Robot!");
+                alert("Please log in with your Deriv account first!");
                 return;
             }
             aiActive = !aiActive;
@@ -362,11 +400,11 @@
                 btn.style.background = "#ef4444";
                 stateLbl.innerText = "SCANNING & TRADING ACTIVE";
                 stateLbl.style.color = "#22c55e";
-                document.getElementById('aiLog').innerText = "Vector AI: Analyzing volatility momentum...";
+                document.getElementById('aiLog').innerText = "Vector AI: Analyzing momentum...";
 
                 aiInterval = setInterval(() => {
                     if (!aiActive) return;
-                    document.getElementById('aiLog').innerText = "Vector AI: Executing automated tick contract...";
+                    document.getElementById('aiLog').innerText = "Vector AI: Executing automated contract...";
                     executeTrade('CALL');
                 }, 8000);
             } else {
