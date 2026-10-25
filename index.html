@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vectorsmasher Pro - Official Workspace</title>
+    <title>Vectorsmasher Pro - Ultimate Trading Workspace</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
@@ -14,8 +14,20 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent-blue: #38bdf8;
-            --accent-green: #22c55e;
             --accent-red: #ef4444;
+            --accent-green: #22c55e;
+            --accent-yellow: #eab308;
+        }
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-blue: #0284c7;
+            --accent-red: #dc2626;
+            --accent-green: #16a34a;
+            --accent-yellow: #ca8a04;
         }
 
         body { 
@@ -25,148 +37,346 @@
             display: flex; 
             justify-content: center; 
             align-items: flex-start; 
-            padding: 8px; 
+            padding: 4px; 
+            transition: background 0.3s ease;
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        .tech-bg-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            background: linear-gradient(rgba(3,7,18,0.85), rgba(3,7,18,0.85)),
+                        radial-gradient(circle at 50% 30%, rgba(56,189,248,0.3) 0%, transparent 70%);
+            opacity: 0.9;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-bottom: 14px;
+        /* BOOT LOADERS */
+        #bootLoader1, #bootLoader2, #derivAuthLoader {
+            position: fixed; inset: 0; background: #030712; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
         }
+        #bootLoader2, #derivAuthLoader { display: none; z-index: 9999; }
 
-        .logo-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .boot-card { background: rgba(13, 19, 34, 0.95); backdrop-filter: blur(12px); border: 1px solid var(--accent-blue); border-radius: 16px; padding: 24px; width: 100%; max-width: 380px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
+        .boot-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .boot-subtitle { font-size: 11px; color: var(--accent-blue); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .progress-bar-bg { width: 100%; height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); transition: width 0.05s linear; }
+        .boot-status { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
 
-        .logo-subtitle {
-            font-size: 9px;
-            color: var(--accent-blue);
-            display: block;
-        }
+        .app-container { width: 100%; max-width: 480px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; min-height: 98vh; display: none; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        
+        #welcomeScreen { display: block; padding: 10px; }
+        .welcome-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .brand-box { font-size: 13px; font-weight: bold; color: var(--text-main); }
+        .brand-sub { font-size: 9px; color: var(--accent-blue); text-shadow: 0 0 10px rgba(56,189,248,0.8); display: block; font-weight: 800; }
+        .welcome-auth-btns { display: flex; gap: 6px; }
+        
+        .market-ticker-banner { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; scrollbar-width: none; }
+        .market-ticker-banner::-webkit-scrollbar { display: none; }
+        .ticker-chip-top { background: rgba(30,41,59,0.5); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 10px; color: var(--text-main); white-space: nowrap; flex-shrink: 0; }
+        .ticker-chip-top span { color: var(--accent-green); font-weight: bold; margin-left: 4px; }
 
-        .btn {
-            background: var(--accent-blue);
-            color: #030712;
-            border: none;
-            padding: 8px 14px;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+        .hero-welcome-anim { text-align: center; margin-bottom: 15px; }
+        .hero-welcome-title { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
+        .hero-welcome-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+        
+        .auth-box-card { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 14px; text-align: center; }
+        .auth-input-btn { display: block; width: 100%; background: var(--accent-blue); color: #030712; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-bottom: 10px; text-align: center; border: none; cursor: pointer; }
+        .auth-input-btn.dark { background: #1e293b; color: #fff; border: 1px solid var(--border-color); }
 
-        .btn-secondary {
-            background: #1e293b;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
+        .api-token-row { display: flex; align-items: center; background: #030712; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; gap: 8px; }
+        .api-token-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 11px; outline: none; }
+        .api-connect-btn { background: var(--accent-blue); color: #030712; border: none; padding: 6px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
 
-        .step-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
+        .warning-yellow-box { background: rgba(234, 179, 8, 0.15); border: 1px solid var(--accent-yellow); border-radius: 8px; padding: 10px; font-size: 10px; color: #fef08a; text-align: center; margin-bottom: 14px; font-weight: 500; }
+        .testimonials-section { margin-bottom: 15px; }
+        .testimonial-card { background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; margin-bottom: 8px; font-size: 10px; }
+        .testimonial-card b { color: var(--accent-blue); }
 
-        .step-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: var(--accent-blue);
-            margin-bottom: 4px;
-        }
+        .boxed-feature-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .boxed-feature-item { background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 11px; font-weight: bold; color: var(--text-main); letter-spacing: 0.5px; }
+        .boxed-feature-item span { display: block; font-size: 9px; color: var(--text-muted); font-weight: normal; margin-top: 3px; }
 
-        .step-desc {
-            font-size: 10px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
+        .workspace-pane { display: none; }
+        .workspace-pane.active { display: block; }
 
-        .download-box {
-            background: #030712;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px;
-            text-align: center;
-            margin-top: 14px;
-        }
+        .top-utility-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 2px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; }
+        .menu-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .utility-right-cluster { display: flex; align-items: center; gap: 6px; }
+        .switch-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); font-size: 10px; font-weight: bold; padding: 6px 8px; border-radius: 8px; cursor: pointer; }
+        .balance-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 8px; border-radius: 8px; font-size: 10px; font-weight: bold; color: var(--accent-green); cursor: pointer; }
+        .account-badge-btn { background: #1e293b; border: 1px solid var(--accent-blue); color: #fff; padding: 6px 8px; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; }
 
-        .status-msg {
-            font-size: 10px;
-            color: var(--accent-green);
-            margin-top: 8px;
-            font-weight: bold;
+        .feature-nav-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
+        .feature-nav-bar::-webkit-scrollbar { display: none; }
+        .feature-tab { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+        .feature-tab.active { background: #1e293b; border-color: var(--accent-blue); color: #fff; }
+
+        .ticker-scroller { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
+        .ticker-scroller::-webkit-scrollbar { display: none; }
+        .ticker-chip { background: var(--bg-card); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 10px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .ticker-chip.active { border-color: var(--accent-blue); background: #1e293b; color: #fff; }
+        .ticker-chip .arrow-up { color: var(--accent-blue); font-weight: bold; }
+        .ticker-chip .arrow-down { color: var(--accent-red); font-weight: bold; }
+        .ticker-chip span { color: var(--accent-green); font-weight: bold; margin-left: 4px; }
+
+        .hero-banner { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; overflow: hidden; }
+        .rainbow-shine-box { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(56,189,248,0.2), rgba(239,68,68,0.2), transparent); animation: rainbowShine 4s infinite linear; pointer-events: none; }
+        @keyframes rainbowShine { 0% { left: -100%; } 100% { left: 200%; } }
+
+        .hero-title { font-size: 15px; font-weight: bold; color: var(--text-main); margin-bottom: 2px; }
+        .hero-quote { font-size: 10px; color: var(--text-muted); font-style: italic; margin-bottom: 6px; }
+        .hero-meta { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-muted); }
+        .live-dot { color: var(--accent-green); font-weight: bold; }
+
+        .section-label { font-size: 10px; color: var(--accent-blue); text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .action-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .card-left { display: flex; align-items: center; gap: 10px; }
+        .card-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; font-size: 15px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .card-title { font-size: 11px; font-weight: bold; color: var(--text-main); margin-bottom: 2px; }
+        .card-desc { font-size: 9px; color: var(--text-muted); }
+        .card-number { font-size: 11px; font-weight: bold; color: var(--text-muted); }
+        .card-arrow { width: 22px; height: 22px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #cbd5e1; }
+        .badge-tag { background: var(--accent-blue); color: #030712; font-size: 8px; padding: 2px 5px; border-radius: 4px; margin-left: 6px; font-weight: bold; }
+
+        .panel-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .digits-black-box { background: #030712; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
+        .digit-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0; }
+        .digit-btn { background: #0b1120; border: 1px solid var(--border-color); color: #fff; padding: 8px 4px; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; font-size: 12px; position: relative; }
+        .digit-btn.selected-grey { background: #334155 !important; border-color: var(--accent-blue); box-shadow: 0 0 12px rgba(56,189,248,0.7); }
+        .digit-pct { font-size: 8px; color: var(--text-muted); display: block; margin-top: 2px; }
+        
+        .bar-container { display: flex; height: 4px; width: 100%; gap: 2px; margin-top: 4px; }
+        .anim-bar-green { background: var(--accent-green); height: 100%; width: 50%; transition: opacity 0.3s ease; }
+        .anim-bar-red { background: var(--accent-red); height: 100%; width: 50%; transition: opacity 0.3s ease; }
+
+        .control-input { width: 100%; background: #030712; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; color: #fff; font-size: 12px; font-weight: bold; text-align: center; outline: none; margin-top: 4px; }
+        .stake-row { display: flex; align-items: center; background: #030712; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; margin-top: 4px; }
+        .stake-btn { background: #1e293b; color: #fff; border: none; padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .stake-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 13px; font-weight: bold; text-align: center; outline: none; }
+
+        .trade-row { display: flex; gap: 8px; margin-top: 10px; }
+        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; text-align: center; }
+        .btn-over { background: var(--accent-green); }
+        .btn-under { background: var(--accent-red); }
+
+        #tabManagerModal, #accountModal, #assetSelectorModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .tab-modal-content { background: #0d1322; border: 1px solid var(--border-color); border-radius: 14px; width: 100%; max-width: 360px; padding: 16px; }
+        .tab-list-item { display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; }
+        .tab-list-item input { background: transparent; border: none; color: #fff; font-size: 11px; outline: none; width: 140px; }
+
+        .ai-floating-btn { 
+            position: fixed; bottom: 20px; right: 20px; width: 54px; height: 54px; border-radius: 50%; 
+            background: linear-gradient(135deg, #38bdf8, #ef4444, #22c55e, #eab308, #38bdf8); background-size: 400% 400%;
+            display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 13px; 
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.9); border: 2px solid rgba(255,255,255,0.6); cursor: pointer; z-index: 100; 
+            animation: rainbowAI 4s ease infinite, bluePulse 2s infinite ease-in-out; 
         }
+        @keyframes rainbowAI { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes bluePulse { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+        #sideMenu { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: none; }
+        .menu-content { width: 260px; background: var(--bg-card); height: 100%; padding: 20px; border-right: 1px solid var(--border-color); overflow-y: auto; }
+        .menu-item { padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 12px; color: var(--text-main); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <div>
-                <span class="logo-title">Vectorsmasher</span>
-                <span class="logo-subtitle">Official Workspace Setup</span>
+    <div class="tech-bg-overlay"></div>
+
+    <!-- BOOT SEQUENCE 1 -->
+    <div id="bootLoader1">
+        <div class="boot-card">
+            <div class="boot-subtitle">Bot Sequence</div>
+            <div class="boot-title">Vectorsmasher Trading Workspace ...</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Please wait while we connect to server ...</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar1"></div>
             </div>
-            <button class="btn" onclick="startDownloadSequence()">Download Setup</button>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">Step 1: Get Started</div>
-            <div class="step-desc">The first thing you want to do is download the software. You have to visit the official platform repository. Once you are there click the blue button.</div>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">Step 2: OS Selection</div>
-            <div class="step-desc">Select the operating system that you use. It will download the install file directly to your computer.</div>
-        </div>
-
-        <div class="step-card">
-            <div class="step-title">Step 3: Installation & Configuration</div>
-            <div class="step-desc">Once it has finished you run the installer. Click next for all of the settings. When it is finished click the finish button.</div>
-        </div>
-
-        <div class="download-box">
-            <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px; color: #fff;">Vectorsmasher v2.6 Core Package</div>
-            <div style="font-size: 9px; color: var(--text-muted); margin-bottom: 10px;">Ready for instant deployment and automated trading execution.</div>
-            <button class="btn btn-secondary" onclick="runInstallerSimulation()">Run Installer Simulation</button>
-            <div id="actionStatus" class="status-msg"></div>
+            <div class="boot-status">
+                <span>Connecting...</span>
+                <span id="bootPercent1">0%</span>
+            </div>
         </div>
     </div>
 
-    <script>
-        function startDownloadSequence() {
-            let status = document.getElementById('actionStatus');
-            status.innerText = "Downloading Vectorsmasher install package...";
-            setTimeout(() => {
-                status.innerText = "Download complete! Ready to run installer.";
-            }, 1000);
-        }
+    <!-- BOOT SEQUENCE 2 -->
+    <div id="bootLoader2">
+        <div class="boot-card">
+            <div class="boot-subtitle">Bot Sequence</div>
+            <div class="boot-title">Vectorsmasher Trading Workspace ...</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 12px;">Initializing D-Bot .. ..</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar2"></div>
+            </div>
+            <div class="boot-status">
+                <span>Loading D-Bot Engine...</span>
+                <span id="bootPercent2">0%</span>
+            </div>
+        </div>
+    </div>
 
-        function runInstallerSimulation() {
-            let status = document.getElementById('actionStatus');
-            status.innerText = "Running installer... Click Next for all settings.";
-            setTimeout(() => {
-                status.innerText = "Installation successful! Click Finish to launch Vectorsmasher.";
-            }, 1200);
-        }
-    </script>
-</body>
-    </html>
-    
+    <!-- DERIV DETECTED LOGIN LOADER -->
+    <div id="derivAuthLoader">
+        <div class="boot-card" style="text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: var(--accent-blue); margin-bottom: 10px;">D ⭕</div>
+            <div class="boot-title" style="margin-bottom: 8px;">Deriv Account Detected</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">vectorsmasher trading workspace load ...</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div style="font-size: 10px; color: var(--accent-green); margin-top: 8px;">100% Connected Successfully</div>
+        </div>
+    </div>
+
+    <!-- TAB MANAGER MODAL -->
+    <div id="tabManagerModal">
+        <div class="tab-modal-content">
+            <div style="font-weight:bold; color:var(--accent-blue); margin-bottom:12px; font-size:13px;">Manage Workspace Tabs</div>
+            <div id="tabListContainer"></div>
+            <div style="display: flex; gap: 8px; margin-top: 15px;">
+                <button onclick="resetTabs()" class="action-btn" style="background:#475569;">Reset</button>
+                <button onclick="closeTabModal()" class="action-btn" style="background:#334155;">Cancel</button>
+                <button onclick="saveTabs()" class="action-btn btn-over">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCOUNT BALANCES & CFD MODAL -->
+    <div id="accountModal" onclick="toggleAccountModal()">
+        <div class="tab-modal-content" onclick="event.stopPropagation()">
+            <div style="font-weight:bold; color:var(--accent-blue); margin-bottom:12px; font-size:13px;">Account Balances</div>
+            <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px; font-size:11px;">
+                Demo Balance: <b style="color:var(--accent-green);">3,020.41 USD</b>
+            </div>
+            <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:12px; font-size:11px;">
+                Real Balance: <b style="color:var(--accent-green);">1,250.00 USD</b>
+            </div>
+            <div style="border-top:1px solid var(--border-color); padding-top:10px; margin-bottom:12px;">
+                <div style="font-size:10px; font-weight:bold; color:#fff; margin-bottom:4px;">Deriv CFD Account</div>
+                <div style="font-size:10px; color:var(--text-muted);">Balance: <b>0.00 USD</b></div>
+            </div>
+            <div style="font-size: 11px; color: var(--accent-green); font-weight: bold; text-align: center; margin-bottom: 10px;">
+                Looking for CFD account? Go to trading hub
+            </div>
+            <button onclick="toggleAccountModal()" class="action-btn btn-over">Close</button>
+        </div>
+    </div>
+
+    <!-- SIDE MENU DRAWER -->
+    <div id="sideMenu" onclick="toggleMenu()">
+        <div class="menu-content" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <span style="font-weight:bold; color:var(--accent-blue);">Menu Options</span>
+                <span onclick="toggleMenu()" style="cursor:pointer; font-size:16px;">✕</span>
+            </div>
+            <div class="menu-item">
+                <span>Dark / White Mode</span>
+                <button onclick="toggleTheme()" id="themeToggleBtn" style="background:none; border:none; cursor:pointer; font-size:16px;">🌙</button>
+            </div>
+            <div class="menu-item" onclick="triggerAction('Logout initiated.')" style="color:var(--accent-red);">
+                <span>Log Out</span>
+                <span>🚪</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('dashboard')">🏠 Dashboard</div>
+            <div class="menu-item" onclick="switchTab('botbuilder')">⚙️ Bot Builder</div>
+            <div class="menu-item" onclick="switchTab('freebots')">📂 Free Bots</div>
+            <div class="menu-item" onclick="switchTab('premium')">👑 Premium AI Bot</div>
+            <div class="menu-item" onclick="switchTab('signal')">📡 Signal AI Bot</div>
+            <div class="menu-item" onclick="switchTab('manual')">📺 Manual Trader</div>
+            <div class="menu-item" onclick="switchTab('bulk')">📦 Bulk Trader</div>
+            <div class="menu-item" onclick="switchTab('copy')">👥 Copy Trade</div>
+            <div class="menu-item" onclick="switchTab('automated')">🤖 Automated</div>
+            <div class="menu-item" onclick="switchTab('speedbot')">🚀 Speed Bot</div>
+            <div class="menu-item" onclick="switchTab('chat')">💬 Pro Chat</div>
+            <div class="menu-item" onclick="switchTab('accumulators')">📈 Accumulators</div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container" id="mainApp">
+
+        <!-- WELCOME SCREEN -->
+        <div id="welcomeScreen">
+            <div class="welcome-header">
+                <div class="brand-box">
+                    vectorsmasher
+                    <span class="brand-sub" style="color: var(--accent-blue); text-shadow: 0 0 10px rgba(56,189,248,0.8);">powered by deriv</span>
+                </div>
+                <div class="welcome-auth-btns">
+                    <button onclick="simulateDerivLogin()" class="auth-input-btn dark" style="padding: 6px 12px; margin:0;">Log In</button>
+                    <button onclick="simulateDerivLogin()" class="auth-input-btn" style="padding: 6px 12px; margin:0;">Get Started</button>
+                </div>
+            </div>
+
+            <div class="market-ticker-banner">
+                <div class="ticker-chip-top">Volatility 75+ <span>+2.45% ▲</span></div>
+                <div class="ticker-chip-top">Boom 100 Index+ <span>+1.82% ▲</span></div>
+            </div>
+
+            <div class="hero-welcome-anim">
+                <div class="hero-welcome-title">Welcome to vectorsmasher</div>
+                <div class="hero-welcome-desc">Free bot ready to load, Trade with better structure</div>
+            </div>
+
+            <div class="auth-box-card">
+                <button onclick="simulateDerivLogin()" class="auth-input-btn">Log In and Trade</button>
+                
+                <div class="api-token-row">
+                    <span style="font-size: 10px; color: var(--text-muted);">API token?</span>
+                    <input type="password" id="apiTokenInput" class="api-token-input" placeholder="Enter API Token Key">
+                    <button onclick="triggerAction('API Token connected securely.')" class="api-connect-btn">Connect &gt;</button>
+                </div>
+
+                <button onclick="triggerAction('Opening Free Account Registration...')" class="auth-input-btn dark">Create Free Account</button>
+            </div>
+
+            <div class="warning-yellow-box">
+                ⚠️ Risk Warning: Trading synthetic indices involves high risk. Ensure proper bot structure before execution.
+            </div>
+
+            <div class="testimonials-section">
+                <div class="section-label">What Trades Are Saying</div>
+                <div class="testimonial-card"><b>Betty Nyaboke:</b> "Appreciate about bot, it executes flawlessly with amazing structure!"</div>
+                <div class="testimonial-card"><b>Morgan Onkundi:</b> "Appreciate of manual trading, the digit barriers and live probabilities are top tier."</div>
+                <div class="testimonial-card"><b>Marcellah Mogaka:</b> "Appreciate about goods of vector, everything in one workspace is a game changer!"</div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <div class="boxed-feature-item" style="text-align: center; background: rgba(56,189,248,0.15); border-color: var(--accent-blue);">
+                    EVERYTHING IN ONE WORKSPACE — FREE TO USE
+                </div>
+                
+                <div class="boxed-feature-container">
+                    <div class="boxed-feature-item">
+                        📂 Free Bot Library
+                        <span>Pre-built XML & D-Bot automated strategies ready to deploy instantly.</span>
+                    </div>
+                    <div class="boxed-feature-item">
+                        🧠 Smart AI Recovery
+                        <span>Advanced neural network algorithms designed to recover drawdowns safely.</span>
+                    </div>
+                    <div class="boxed-feature-item">
+                        📈 Market Analysis
+                        <span>Real-time tick data, support/resistance levels, and trend indicators.</span>
+                    </div>
+                    <div class="boxed-feature-item">
+                        ⚡ Speedbot
+                        <span>Ultra-low latency execution engine for high-frequency trading.</span>
+                    </div>
+                    <div class="boxed-feature-item">
+                        💬 Pro Chat
+                        <span>Global community chat and automated channel signals.</span>
+                    </div>
+                    <div class="boxed-feature-item">
+                        ⭐ Manual Trading (Popular)
+                        <span>Digit over/under terminals with dynamic cursor and probability bars.</span>
+                    </div>
+                    <div class="boxed-feature-item">
+                        ⚙️ Bot Builder
+                        <span>Drag-and-drop visual block editor for custom strategy creation.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD & WORKSPACE SCREEN -->
+        <div id="dashboardWorkspace
